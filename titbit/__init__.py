@@ -9,7 +9,23 @@ within the functions/objects that use them, when possible.
 def mermaid_to_graphviz(
     mermaid_code, extra_replacements=(), *, prefix="", suffix="", egress=None
 ):
-    """Converts mermaid code to graphviz code."""
+    """Converts mermaid code to graphviz code.
+    
+    >>> mermaid_code = '''
+    ... graph TD
+    ... A --> B & C
+    ... B & C --> D
+    ... '''
+    >>> graphviz_code = mermaid_to_graphviz(mermaid_code)
+    >>> print(graphviz_code)
+    digraph G {
+    <BLANKLINE>
+    graph TD
+        A -> B , C
+        B , C -> D
+    
+    }
+    """
 
     from lkj import regex_based_substitution, import_object
 

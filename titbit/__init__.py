@@ -23,7 +23,7 @@ def mermaid_to_graphviz(
     graph TD
         A -> B , C
         B , C -> D
-    
+    <BLANKLINE>
     }
     """
 

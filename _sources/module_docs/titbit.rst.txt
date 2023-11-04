@@ -1,0 +1,4 @@
+titbit
+======
+.. automodule:: titbit
+   :members:

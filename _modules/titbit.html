@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>titbit &mdash; titbit 0.0.1 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/toggleprompt.js"></script>
+        <script src="../_static/clipboard.min.js"></script>
+        <script src="../_static/copybutton.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            titbit
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../module_docs/titbit.html">titbit</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">titbit</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">titbit</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for titbit</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;A place to dump things that might be useful in the future, </span>
+<span class="sd">but we&#39;re not sure enough to find a proper home for it yet.</span>
+
+<span class="sd">To make it easy to copy/paste the code elsewhere, include the import statements</span>
+<span class="sd">within the functions/objects that use them, when possible.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="mermaid_to_graphviz"><a class="viewcode-back" href="../module_docs/titbit.html#titbit.mermaid_to_graphviz">[docs]</a><span class="k">def</span> <span class="nf">mermaid_to_graphviz</span><span class="p">(</span>
+    <span class="n">mermaid_code</span><span class="p">,</span> <span class="n">extra_replacements</span><span class="o">=</span><span class="p">(),</span> <span class="o">*</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">egress</span><span class="o">=</span><span class="kc">None</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts mermaid code to graphviz code.</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; mermaid_code = &#39;&#39;&#39;</span>
+<span class="sd">    ... graph TD</span>
+<span class="sd">    ... A --&gt; B &amp; C</span>
+<span class="sd">    ... B &amp; C --&gt; D</span>
+<span class="sd">    ... &#39;&#39;&#39;</span>
+<span class="sd">    &gt;&gt;&gt; graphviz_code = mermaid_to_graphviz(mermaid_code)</span>
+<span class="sd">    &gt;&gt;&gt; print(graphviz_code)  # doctest: +NORMALIZE_WHITESPACE</span>
+<span class="sd">    digraph G {</span>
+<span class="sd">    &lt;BLANKLINE&gt;</span>
+<span class="sd">    graph TD</span>
+<span class="sd">        A -&gt; B , C</span>
+<span class="sd">        B , C -&gt; D</span>
+<span class="sd">    &lt;BLANKLINE&gt;</span>
+<span class="sd">    }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="kn">from</span> <span class="nn">lkj</span> <span class="kn">import</span> <span class="n">regex_based_substitution</span><span class="p">,</span> <span class="n">import_object</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">egress</span><span class="p">:</span>
+        <span class="n">egress</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">egress</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">egress</span> <span class="o">=</span> <span class="n">import_object</span><span class="p">(</span><span class="n">egress</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">callable</span><span class="p">(</span><span class="n">egress</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;egress must be a callable or a string, not </span><span class="si">{</span><span class="n">egress</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="n">mermaid_to_graphviz_replacements</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">(</span><span class="s2">&quot;--&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;-&gt;&quot;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;&amp;&quot;</span><span class="p">,</span> <span class="s2">&quot;,&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">mermaid_to_graphviz_replacements</span> <span class="o">=</span> <span class="n">mermaid_to_graphviz_replacements</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span>
+        <span class="n">extra_replacements</span>
+    <span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">mermaid_code</span>
+    <span class="c1"># remove the first line if it starts with &#39;graph&#39;</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:])</span> <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;graph&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">s</span>
+    <span class="c1"># carry out the replacements</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">regex_based_substitution</span><span class="p">(</span><span class="n">mermaid_to_graphviz_replacements</span><span class="p">)(</span><span class="n">s</span><span class="p">)</span>
+    <span class="c1"># add the prefix and suffix and wrap it in the graphviz graph declaration</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;digraph G {&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">suffix</span>
+    <span class="k">return</span> <span class="n">s</span> <span class="o">+</span> <span class="s2">&quot;}&quot;</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright NO COPYRIGHT.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

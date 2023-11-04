@@ -17,7 +17,7 @@ def mermaid_to_graphviz(
     ... B & C --> D
     ... '''
     >>> graphviz_code = mermaid_to_graphviz(mermaid_code)
-    >>> print(graphviz_code)
+    >>> print(graphviz_code)  # doctest: +NORMALIZE_WHITESPACE
     digraph G {
     <BLANKLINE>
     graph TD

@@ -7,7 +7,7 @@ within the functions/objects that use them, when possible.
 
 
 def mermaid_to_graphviz(
-    mermaid_code, extra_replacements=(), *, prefix="", suffix="", egress=None
+    mermaid_code, extra_replacements=(), *, prefix='', suffix='', egress=None
 ):
     """Converts mermaid code to graphviz code.
     
@@ -34,20 +34,20 @@ def mermaid_to_graphviz(
     elif isinstance(egress, str):
         egress = import_object(egress)
     else:
-        assert callable(egress), f"egress must be a callable or a string, not {egress}"
+        assert callable(egress), f'egress must be a callable or a string, not {egress}'
 
     mermaid_to_graphviz_replacements = (
-        ("-->", "->"),
-        ("&", ","),
+        ('-->', '->'),
+        ('&', ','),
     )
     mermaid_to_graphviz_replacements = mermaid_to_graphviz_replacements + tuple(
         extra_replacements
     )
     s = mermaid_code
     # remove the first line if it starts with 'graph'
-    s = "\n".join(s.split("\n")[1:]) if s.startswith("graph") else s
+    s = '\n'.join(s.split('\n')[1:]) if s.startswith('graph') else s
     # carry out the replacements
     s = regex_based_substitution(mermaid_to_graphviz_replacements)(s)
     # add the prefix and suffix and wrap it in the graphviz graph declaration
-    s = "digraph G {" + "\n" + f"{prefix}" + s + "\n" + suffix
-    return s + "}"
+    s = 'digraph G {' + '\n' + f'{prefix}' + s + '\n' + suffix
+    return s + '}'

@@ -10,7 +10,7 @@ def git_action_on_projects(
     projects,
     action='pull',
     *,
-    on_error=lambda project, e: print(f"Error with {project=}: {e}"),
+    on_error=lambda project, e: print(f'Error with {project=}: {e}'),
     egress=lambda result: result.stdout,
 ):
     """Take git actions all the projects in the list of projects.
@@ -48,7 +48,7 @@ def git_action_on_projects(
         try:
             # Execute git pull in the specified folder
             result = subprocess.run(
-                ["git", "-C", folder, action],
+                ['git', '-C', folder, action],
                 check=True,
                 text=True,
                 capture_output=True,

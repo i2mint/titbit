@@ -3,7 +3,7 @@
 import ast
 from ast import AST
 from functools import lru_cache, partial
-from typing import Iterable, Tuple, List, KT, VT, Sequence, Callable
+from typing import Iterable, Tuple, List, KT, VT, Sequence, Callable, Dict
 from collections.abc import Mapping  # not from typing because need for singledispatch
 from collections import defaultdict
 import inspect
@@ -34,7 +34,7 @@ def yield_class_hierarchy(
             yield from yield_class_hierarchy(module, obj, path + (obj.__name__,))
 
 
-def group_values_by_key(kv_pairs: Iterable[Tuple[KT, VT]]) -> dict[KT, List[VT]]:
+def group_values_by_key(kv_pairs: Iterable[Tuple[KT, VT]]) -> Dict[KT, List[VT]]:
     """
     Groups values by key in a list.
 

@@ -89,6 +89,7 @@
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
 
+<span class="kn">from</span> <span class="nn">i2</span> <span class="kn">import</span> <span class="n">Sig</span>
 
 <span class="c1"># -------------------------------------------------------------------------------</span>
 <span class="c1"># General utils</span>
@@ -154,7 +155,10 @@
 <span class="nd">@singledispatch</span>
 <span class="k">def</span> <span class="nf">ensure_ast</span><span class="p">(</span><span class="n">code</span><span class="p">:</span> <span class="n">AST</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AST</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Ensures that the input is an AST node, returning it as-is if already an AST.</span>
+
 <span class="sd">    If input is a string, parses it as Python code and returns the resulting AST.</span>
+<span class="sd">    If the input is a module object, it will get the code, parse it, and return an AST.</span>
+<span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">AST</span><span class="p">),</span> <span class="s2">&quot;Input must be an AST node or a string.&quot;</span>
     <span class="k">return</span> <span class="n">code</span></div>
@@ -375,6 +379,9 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate code that refactors &quot;flat code&quot; into a reusable &quot;controller&quot; class.</span>
 
+<span class="sd">    You&#39;d usually just use the `bound_properties_refactor` function for this, but </span>
+<span class="sd">    this class&#39;s instances let&#39;s you get intermediate objects that can be useful.</span>
+
 <span class="sd">    &gt;&gt;&gt; code_str = &#39;&#39;&#39;</span>
 <span class="sd">    ... apple = banana + carrot</span>
 <span class="sd">    ... date = &#39;banana&#39;</span>
@@ -449,6 +456,40 @@
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">refactored_code</span></div>
+
+
+
+<div class="viewcode-block" id="bound_properties_refactor">
+<a class="viewcode-back" href="../../module_docs/titbit/ast_utils.html#titbit.ast_utils.bound_properties_refactor">[docs]</a>
+<span class="nd">@Sig</span><span class="p">(</span><span class="n">BoundPropertiesRefactor</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">bound_properties_refactor</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate code that refactors &quot;flat code&quot; into a reusable &quot;controller&quot; class.</span>
+
+<span class="sd">    &gt;&gt;&gt; code_str = &#39;&#39;&#39;</span>
+<span class="sd">    ... apple = banana + carrot</span>
+<span class="sd">    ... date = &#39;banana&#39;</span>
+<span class="sd">    ... egg = apple * 2</span>
+<span class="sd">    ... egg = egg + 1</span>
+<span class="sd">    ... &#39;&#39;&#39;</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; refactored_code = bound_properties_refactor(code_str)</span>
+<span class="sd">    &gt;&gt;&gt; print(refactored_code)  # doctest: +NORMALIZE_WHITESPACE</span>
+<span class="sd">    @property</span>
+<span class="sd">    def apple(self):</span>
+<span class="sd">        return banana + carrot</span>
+<span class="sd">    &lt;BLANKLINE&gt;</span>
+<span class="sd">    date = &#39;banana&#39;</span>
+<span class="sd">    &lt;BLANKLINE&gt;</span>
+<span class="sd">    @property</span>
+<span class="sd">    def egg(self):</span>
+<span class="sd">        egg = self.apple * 2</span>
+<span class="sd">        egg = egg + 1</span>
+<span class="sd">        return egg</span>
+<span class="sd">    &lt;BLANKLINE&gt;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">BoundPropertiesRefactor</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)()</span></div>
 
 </pre></div>
 

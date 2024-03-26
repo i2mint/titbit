@@ -84,6 +84,9 @@
 <span class="sd">within the functions/objects that use them, when possible.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">from</span> <span class="nn">titbit.ast_utils</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">rename_variables</span><span class="p">,</span> <span class="n">bound_properties_refactor</span><span class="p">,</span> <span class="n">BoundPropertiesRefactor</span><span class="p">,</span> <span class="n">ensure_ast</span>
+<span class="p">)</span>
 
 <div class="viewcode-block" id="git_action_on_projects">
 <a class="viewcode-back" href="../module_docs/titbit.html#titbit.git_action_on_projects">[docs]</a>
@@ -104,6 +107,7 @@
 <span class="sd">    &gt;&gt;&gt; projects = [</span>
 <span class="sd">    ...     some_package, &quot;some_package_name&quot;, &quot;some_package_dir_path&quot;</span>
 <span class="sd">    ... ]  # doctest: +SKIP</span>
+<span class="sd">    &gt;&gt;&gt; # By default, the git action performed is to pull</span>
 <span class="sd">    &gt;&gt;&gt; git_action_on_projects(projects)  # doctest: +SKIP</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>

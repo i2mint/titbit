@@ -57,6 +57,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#titbit.ast_utils.assignments_nodes"><code class="docutils literal notranslate"><span class="pre">assignments_nodes()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#titbit.ast_utils.ast_class_names"><code class="docutils literal notranslate"><span class="pre">ast_class_names()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#titbit.ast_utils.ast_flat_hierarchy"><code class="docutils literal notranslate"><span class="pre">ast_flat_hierarchy()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#titbit.ast_utils.bound_properties_refactor"><code class="docutils literal notranslate"><span class="pre">bound_properties_refactor()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#titbit.ast_utils.ensure_ast"><code class="docutils literal notranslate"><span class="pre">ensure_ast()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#titbit.ast_utils.group_values_by_key"><code class="docutils literal notranslate"><span class="pre">group_values_by_key()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#titbit.ast_utils.property_method_lines"><code class="docutils literal notranslate"><span class="pre">property_method_lines()</span></code></a></li>
@@ -97,6 +98,8 @@
 <dt class="sig sig-object py" id="titbit.ast_utils.BoundPropertiesRefactor">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">titbit.ast_utils.</span></span><span class="sig-name descname"><span class="pre">BoundPropertiesRefactor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AST</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decorator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'&#64;property'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'self'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/titbit/ast_utils.html#BoundPropertiesRefactor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#titbit.ast_utils.BoundPropertiesRefactor" title="Link to this definition"></a></dt>
 <dd><p>Generate code that refactors “flat code” into a reusable “controller” class.</p>
+<p>You’d usually just use the <cite>bound_properties_refactor</cite> function for this, but
+this class’s instances let’s you get intermediate objects that can be useful.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">code_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
 <span class="gp">... </span><span class="s1">apple = banana + carrot</span>
 <span class="gp">... </span><span class="s1">date = &#39;banana&#39;</span>
@@ -155,14 +158,43 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="titbit.ast_utils.bound_properties_refactor">
+<span class="sig-prename descclassname"><span class="pre">titbit.ast_utils.</span></span><span class="sig-name descname"><span class="pre">bound_properties_refactor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AST</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decorator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'&#64;property'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'self'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/titbit/ast_utils.html#bound_properties_refactor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#titbit.ast_utils.bound_properties_refactor" title="Link to this definition"></a></dt>
+<dd><p>Generate code that refactors “flat code” into a reusable “controller” class.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">code_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
+<span class="gp">... </span><span class="s1">apple = banana + carrot</span>
+<span class="gp">... </span><span class="s1">date = &#39;banana&#39;</span>
+<span class="gp">... </span><span class="s1">egg = apple * 2</span>
+<span class="gp">... </span><span class="s1">egg = egg + 1</span>
+<span class="gp">... </span><span class="s1">&#39;&#39;&#39;</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">refactored_code</span> <span class="o">=</span> <span class="n">bound_properties_refactor</span><span class="p">(</span><span class="n">code_str</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">refactored_code</span><span class="p">)</span>  
+<span class="go">@property</span>
+<span class="go">def apple(self):</span>
+<span class="go">    return banana + carrot</span>
+
+<span class="go">date = &#39;banana&#39;</span>
+
+<span class="go">@property</span>
+<span class="go">def egg(self):</span>
+<span class="go">    egg = self.apple * 2</span>
+<span class="go">    egg = egg + 1</span>
+<span class="go">    return egg</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="titbit.ast_utils.ensure_ast">
 <span class="sig-prename descclassname"><span class="pre">titbit.ast_utils.</span></span><span class="sig-name descname"><span class="pre">ensure_ast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AST</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AST</span></span></span><a class="reference internal" href="../../_modules/titbit/ast_utils.html#ensure_ast"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#titbit.ast_utils.ensure_ast" title="Link to this definition"></a></dt>
 <dt class="sig sig-object py">
 <span class="sig-prename descclassname"><span class="pre">titbit.ast_utils.</span></span><span class="sig-name descname"><span class="pre">ensure_ast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AST</span></span></span></dt>
 <dt class="sig sig-object py">
 <span class="sig-prename descclassname"><span class="pre">titbit.ast_utils.</span></span><span class="sig-name descname"><span class="pre">ensure_ast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">module</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AST</span></span></span></dt>
-<dd><p>Ensures that the input is an AST node, returning it as-is if already an AST.
-If input is a string, parses it as Python code and returns the resulting AST.</p>
+<dd><p>Ensures that the input is an AST node, returning it as-is if already an AST.</p>
+<p>If input is a string, parses it as Python code and returns the resulting AST.
+If the input is a module object, it will get the code, parse it, and return an AST.</p>
 </dd></dl>
 
 <dl class="py function">

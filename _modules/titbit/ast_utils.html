@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>titbit.ast_utils &mdash; titbit 0.1.2 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=92734c54"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
+        <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            titbit
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/titbit.html">titbit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/titbit/ast_utils.html">titbit.ast_utils</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">titbit</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../titbit.html">titbit</a></li>
+      <li class="breadcrumb-item active">titbit.ast_utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for titbit.ast_utils</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;AST Utils&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">ast</span>
+<span class="kn">from</span> <span class="nn">ast</span> <span class="kn">import</span> <span class="n">AST</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">lru_cache</span><span class="p">,</span> <span class="n">partial</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">KT</span><span class="p">,</span> <span class="n">VT</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Callable</span>
+<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Mapping</span>  <span class="c1"># not from typing because need for singledispatch</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
+
+
+<span class="c1"># -------------------------------------------------------------------------------</span>
+<span class="c1"># General utils</span>
+
+
+<div class="viewcode-block" id="yield_class_hierarchy">
+<a class="viewcode-back" href="../../module_docs/titbit/ast_utils.html#titbit.ast_utils.yield_class_hierarchy">[docs]</a>
+<span class="k">def</span> <span class="nf">yield_class_hierarchy</span><span class="p">(</span>
+    <span class="n">module</span><span class="p">,</span> <span class="n">base_class</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prints out the hierarchy of AST types defined in the ast module.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">    - module: The module to visit</span>
+<span class="sd">    - base_class: The current base class to print subclasses for</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Iterate through all classes defined in the module.</span>
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">):</span>
+        <span class="c1"># Check if the class is a direct subclass of the current base_class.</span>
+        <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">base_class</span><span class="p">)</span> <span class="ow">and</span> <span class="n">obj</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">base_class</span><span class="p">:</span>
+            <span class="c1"># yield the class name</span>
+            <span class="k">yield</span> <span class="n">path</span><span class="p">,</span> <span class="n">obj</span><span class="o">.</span><span class="vm">__name__</span>
+            <span class="c1"># Recursively print subclasses of the current class.</span>
+            <span class="k">yield from</span> <span class="n">yield_class_hierarchy</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">path</span> <span class="o">+</span> <span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,))</span></div>
+
+
+
+<div class="viewcode-block" id="group_values_by_key">
+<a class="viewcode-back" href="../../module_docs/titbit/ast_utils.html#titbit.ast_utils.group_values_by_key">[docs]</a>
+<span class="k">def</span> <span class="nf">group_values_by_key</span><span class="p">(</span><span class="n">kv_pairs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">KT</span><span class="p">,</span> <span class="n">VT</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">KT</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">VT</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Groups values by key in a list.</span>
+
+<span class="sd">    :param kv_pairs: Iterable of key-value pairs</span>
+<span class="sd">    :return: A dictionary with keys and list of values grouped by key</span>
+
+<span class="sd">    &gt;&gt;&gt; group_values_by_key([(&#39;a&#39;, 1), (&#39;b&#39;, 2), (&#39;a&#39;, 3)])</span>
+<span class="sd">    {&#39;a&#39;: [1, 3], &#39;b&#39;: [2]}</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cumul</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">path</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">kv_pairs</span><span class="p">:</span>
+        <span class="n">cumul</span><span class="p">[</span><span class="n">path</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">cumul</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># -------------------------------------------------------------------------------</span>
+<span class="c1"># ast utils</span>
+
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">singledispatch</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">ModuleType</span>
+
+<span class="n">Code</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">AST</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="ensure_ast">
+<a class="viewcode-back" href="../../module_docs/titbit/ast_utils.html#titbit.ast_utils.ensure_ast">[docs]</a>
+<span class="nd">@singledispatch</span>
+<span class="k">def</span> <span class="nf">ensure_ast</span><span class="p">(</span><span class="n">code</span><span class="p">:</span> <span class="n">AST</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AST</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Ensures that the input is an AST node, returning it as-is if already an AST.</span>
+<span class="sd">    If input is a string, parses it as Python code and returns the resulting AST.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">AST</span><span class="p">),</span> <span class="s2">&quot;Input must be an AST node or a string.&quot;</span>
+    <span class="k">return</span> <span class="n">code</span></div>
+
+
+
+<span class="nd">@ensure_ast</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AST</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parses a string containing Python code and returns its AST.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ast</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+
+
+<span class="nd">@ensure_ast</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">ModuleType</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="n">code</span><span class="p">:</span> <span class="n">ModuleType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AST</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parses a module and returns its AST.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ensure_ast</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">getsource</span><span class="p">(</span><span class="n">code</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="ast_flat_hierarchy">
+<a class="viewcode-back" href="../../module_docs/titbit/ast_utils.html#titbit.ast_utils.ast_flat_hierarchy">[docs]</a>
+<span class="k">def</span> <span class="nf">ast_flat_hierarchy</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a dictionary with the AST classes grouped by their module path.</span>
+
+<span class="sd">    &gt;&gt;&gt; t = ast_flat_hierarchy()</span>
+<span class="sd">    &gt;&gt;&gt; sorted(t)  # doctest: +NORMALIZE_WHITESPACE</span>
+<span class="sd">    [&#39;ast&#39;, &#39;ast.Constant&#39;, &#39;ast.boolop&#39;, &#39;ast.cmpop&#39;, &#39;ast.excepthandler&#39;,</span>
+<span class="sd">    &#39;ast.expr&#39;, &#39;ast.expr.Constant&#39;, &#39;ast.expr_context&#39;, &#39;ast.mod&#39;, &#39;ast.operator&#39;,</span>
+<span class="sd">    &#39;ast.pattern&#39;, &#39;ast.slice&#39;, &#39;ast.stmt&#39;, &#39;ast.type_ignore&#39;, &#39;ast.unaryop&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; sorted(t[&#39;ast.expr.Constant&#39;])</span>
+<span class="sd">    [&#39;Bytes&#39;, &#39;Ellipsis&#39;, &#39;NameConstant&#39;, &#39;Num&#39;, &#39;Str&#39;]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kv_pairs</span> <span class="o">=</span> <span class="n">yield_class_hierarchy</span><span class="p">(</span><span class="n">ast</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;ast&#39;</span><span class="p">,),</span> <span class="n">base_class</span><span class="o">=</span><span class="n">ast</span><span class="o">.</span><span class="n">AST</span><span class="p">)</span>
+    <span class="n">kv_pairs</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kv_pairs</span><span class="p">)</span>  <span class="c1"># mk dot-paths from tuple paths</span>
+    <span class="k">return</span> <span class="n">group_values_by_key</span><span class="p">(</span><span class="n">kv_pairs</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ast_class_names">
+<a class="viewcode-back" href="../../module_docs/titbit/ast_utils.html#titbit.ast_utils.ast_class_names">[docs]</a>
+<span class="nd">@lru_cache</span>
+<span class="k">def</span> <span class="nf">ast_class_names</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The set of names of ast classes&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">ast_flat_hierarchy</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span></div>
+
+
+
+<span class="c1"># TODO: The idea here, left for later to explore, was to make it easier to</span>
+<span class="c1"># do ast visitors using routing and namespacing.</span>
+<span class="c1"># from i2 import Namespace</span>
+<span class="c1"># from titbit.ast_utils import ast_class_names</span>
+<span class="c1"># ast_types = Namespace(**{name: getattr(ast, name) for name in ast_class_names})</span>
+<span class="c1">## etc.</span>
+
+
+<span class="n">CallableMapping</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">KT</span><span class="p">],</span> <span class="n">VT</span><span class="p">]</span>
+<span class="n">OldToNew</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">CallableMapping</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">KT</span><span class="p">,</span> <span class="n">VT</span><span class="p">]]</span>
+
+
+<span class="nd">@singledispatch</span>
+<span class="k">def</span> <span class="nf">ensure_callable_mapping</span><span class="p">(</span><span class="n">mapping</span><span class="p">:</span> <span class="n">CallableMapping</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CallableMapping</span><span class="p">:</span>
+    <span class="k">assert</span> <span class="nb">callable</span><span class="p">(</span><span class="n">mapping</span><span class="p">),</span> <span class="s2">&quot;mapping must be callable.&quot;</span>
+    <span class="k">return</span> <span class="n">mapping</span>
+
+
+<span class="k">def</span> <span class="nf">_default_to_key</span><span class="p">(</span><span class="n">mapping</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">k</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">partial</span><span class="p">(</span><span class="n">_default_to_key</span><span class="p">,</span> <span class="n">mapping</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+
+
+<span class="nd">@ensure_callable_mapping</span><span class="o">.</span><span class="n">register</span>
+<span class="k">def</span> <span class="nf">_ensure_callable_mapping_mapping</span><span class="p">(</span><span class="n">mapping</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CallableMapping</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a callable getter that is based on a mapping.</span>
+<span class="sd">    If the key exists, the mapping will be used to return the value.</span>
+<span class="sd">    If not, the key itself will be returned.</span>
+
+<span class="sd">    &gt;&gt;&gt; func = _ensure_callable_mapping_mapping({&#39;a&#39;: 1})</span>
+<span class="sd">    &gt;&gt;&gt; func(&#39;a&#39;)</span>
+<span class="sd">    1</span>
+<span class="sd">    &gt;&gt;&gt; func(&#39;b&#39;)</span>
+<span class="sd">    &#39;b&#39;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_default_to_key</span><span class="p">(</span><span class="n">mapping</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="rename_variables">
+<a class="viewcode-back" href="../../module_docs/titbit/ast_utils.html#titbit.ast_utils.rename_variables">[docs]</a>
+<span class="k">def</span> <span class="nf">rename_variables</span><span class="p">(</span><span class="n">code</span><span class="p">:</span> <span class="n">Code</span><span class="p">,</span> <span class="n">old_to_new</span><span class="p">:</span> <span class="n">OldToNew</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ast</span><span class="o">.</span><span class="n">AST</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Yields a new ast.AST with all variables renamed according to new_names.</span>
+
+<span class="sd">    :param code: The code string or ast.AST object to rename variables in</span>
+<span class="sd">    :param old_to_new: A mapping from old variable names to new variable names</span>
+
+<span class="sd">    &gt;&gt;&gt; import ast</span>
+<span class="sd">    &gt;&gt;&gt; test_code_str = &#39;&#39;&#39;</span>
+<span class="sd">    ... apple = banana + carrot</span>
+<span class="sd">    ... date = &#39;banana&#39;</span>
+<span class="sd">    ... egg = apple * self.apple</span>
+<span class="sd">    ... &#39;&#39;&#39;</span>
+<span class="sd">    &gt;&gt;&gt; transformed_test_code = rename_variables(test_code_str, {&#39;apple&#39;: &#39;APPLE&#39;, &#39;banana&#39;: &#39;BANANA&#39;})</span>
+<span class="sd">    &gt;&gt;&gt; transformed_test_code_str = ast.unparse(transformed_test_code)</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; assert transformed_test_code_str.strip() == (&#39;&#39;&#39;</span>
+<span class="sd">    ... APPLE = BANANA + carrot</span>
+<span class="sd">    ... date = &#39;banana&#39;</span>
+<span class="sd">    ... egg = APPLE * self.apple</span>
+<span class="sd">    ... &#39;&#39;&#39;.strip())</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">ensure_ast</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">old_to_new</span> <span class="o">=</span> <span class="n">ensure_callable_mapping</span><span class="p">(</span><span class="n">old_to_new</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_rename</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Name</span><span class="p">):</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">old_to_new</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">ast</span><span class="o">.</span><span class="n">iter_fields</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">AST</span><span class="p">):</span>
+                        <span class="n">_rename</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">AST</span><span class="p">):</span>
+                <span class="n">_rename</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="n">_rename</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">code</span></div>
+
+
+
+<span class="c1"># -------------------------------------------------------------------------------</span>
+<span class="c1"># Refactoring flat code (e.g. notebook cells) to Controller classes</span>
+
+
+<div class="viewcode-block" id="assignments_nodes">
+<a class="viewcode-back" href="../../module_docs/titbit/ast_utils.html#titbit.ast_utils.assignments_nodes">[docs]</a>
+<span class="k">def</span> <span class="nf">assignments_nodes</span><span class="p">(</span><span class="n">code</span><span class="p">:</span> <span class="n">Code</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Yield the `(varname, var_expression)` pairs for all assignment nodes of `code_str`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">ensure_ast</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">ast</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Assign</span><span class="p">):</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">targets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Name</span><span class="p">):</span>
+                <span class="k">yield</span> <span class="n">target</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">value</span></div>
+
+
+
+<div class="viewcode-block" id="assignments_code">
+<a class="viewcode-back" href="../../module_docs/titbit/ast_utils.html#titbit.ast_utils.assignments_code">[docs]</a>
+<span class="k">def</span> <span class="nf">assignments_code</span><span class="p">(</span><span class="n">code</span><span class="p">:</span> <span class="n">Code</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Yield (name, code_definition) variable assignments pairs.&quot;&quot;&quot;</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">ensure_ast</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">ast_node</span> <span class="ow">in</span> <span class="n">assignments_nodes</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="n">name</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">unparse</span><span class="p">(</span><span class="n">ast_node</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="property_method_lines">
+<a class="viewcode-back" href="../../module_docs/titbit/ast_utils.html#titbit.ast_utils.property_method_lines">[docs]</a>
+<span class="k">def</span> <span class="nf">property_method_lines</span><span class="p">(</span><span class="n">varname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">nodes</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate lines that would correspond to property methods for assignments</span>
+<span class="sd">    made by the code specified by nodes, for an assignment to a variable named varname.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">yield</span> <span class="sa">f</span><span class="s2">&quot;return </span><span class="si">{</span><span class="n">ast</span><span class="o">.</span><span class="n">unparse</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">varname</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="n">ast</span><span class="o">.</span><span class="n">unparse</span><span class="p">(</span><span class="n">node</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">yield</span> <span class="sa">f</span><span class="s2">&quot;return </span><span class="si">{</span><span class="n">varname</span><span class="si">}</span><span class="s2">&quot;</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">generate_property_refactor_line</span><span class="p">(</span>
+    <span class="n">varname</span><span class="p">,</span>
+    <span class="n">nodes</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">indent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+    <span class="n">decorator</span><span class="o">=</span><span class="s1">&#39;@property&#39;</span><span class="p">,</span>
+    <span class="n">instance_name</span><span class="o">=</span><span class="s1">&#39;self&#39;</span><span class="p">,</span>
+    <span class="n">exclude_types</span><span class="o">=</span><span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">Constant</span><span class="p">,),</span>
+<span class="p">):</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">exclude_types</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">indent</span><span class="si">}{</span><span class="n">varname</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="n">ast</span><span class="o">.</span><span class="n">unparse</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="si">{</span><span class="n">indent</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">decorator</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">indent</span><span class="si">}{</span><span class="n">decorator</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">yield</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">indent</span><span class="si">}</span><span class="s1">def </span><span class="si">{</span><span class="n">varname</span><span class="si">}</span><span class="s1">(</span><span class="si">{</span><span class="n">instance_name</span><span class="si">}</span><span class="s1">):&#39;</span>
+        <span class="k">yield</span> <span class="p">(</span>
+            <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">indent</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">property_method_lines</span><span class="p">(</span><span class="n">varname</span><span class="p">,</span> <span class="n">nodes</span><span class="p">))</span>
+            <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="si">{</span><span class="n">indent</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">generate_lines</span><span class="p">(</span>
+    <span class="n">code_str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">sep</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">decorator</span><span class="o">=</span><span class="s1">&#39;@property&#39;</span><span class="p">,</span> <span class="n">instance_name</span><span class="o">=</span><span class="s1">&#39;self&#39;</span>
+<span class="p">):</span>
+    <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">decorator</span><span class="o">=</span><span class="n">decorator</span><span class="p">,</span> <span class="n">instance_name</span><span class="o">=</span><span class="n">instance_name</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">varname</span><span class="p">,</span> <span class="n">nodes</span> <span class="ow">in</span> <span class="n">group_values_by_key</span><span class="p">(</span><span class="n">assignments_nodes</span><span class="p">(</span><span class="n">code_str</span><span class="p">))</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">yield from</span> <span class="n">generate_property_refactor_line</span><span class="p">(</span><span class="n">varname</span><span class="p">,</span> <span class="n">nodes</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sep</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">sep</span>
+
+
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+
+
+<div class="viewcode-block" id="BoundPropertiesRefactor">
+<a class="viewcode-back" href="../../module_docs/titbit/ast_utils.html#titbit.ast_utils.BoundPropertiesRefactor">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">BoundPropertiesRefactor</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate code that refactors &quot;flat code&quot; into a reusable &quot;controller&quot; class.</span>
+
+<span class="sd">    &gt;&gt;&gt; code_str = &#39;&#39;&#39;</span>
+<span class="sd">    ... apple = banana + carrot</span>
+<span class="sd">    ... date = &#39;banana&#39;</span>
+<span class="sd">    ... egg = apple * 2</span>
+<span class="sd">    ... egg = egg + 1</span>
+<span class="sd">    ... &#39;&#39;&#39;</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; b = BoundPropertiesRefactor(code_str)</span>
+<span class="sd">    &gt;&gt;&gt; print(b())  # doctest: +NORMALIZE_WHITESPACE</span>
+<span class="sd">    @property</span>
+<span class="sd">    def apple(self):</span>
+<span class="sd">        return banana + carrot</span>
+<span class="sd">    &lt;BLANKLINE&gt;</span>
+<span class="sd">    date = &#39;banana&#39;</span>
+<span class="sd">    &lt;BLANKLINE&gt;</span>
+<span class="sd">    @property</span>
+<span class="sd">    def egg(self):</span>
+<span class="sd">        egg = self.apple * 2</span>
+<span class="sd">        egg = egg + 1</span>
+<span class="sd">        return egg</span>
+<span class="sd">    &lt;BLANKLINE&gt;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">code</span><span class="p">:</span> <span class="n">Code</span>
+
+    <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">indent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">decorator</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;@property&#39;</span>
+    <span class="n">instance_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;self&#39;</span>
+    <span class="n">exclude_types</span> <span class="o">=</span> <span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">Constant</span><span class="p">,)</span>
+
+    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_refactored_lines_gen</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span>
+            <span class="n">generate_property_refactor_line</span><span class="p">,</span>
+            <span class="n">indent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">indent</span><span class="p">,</span>
+            <span class="n">decorator</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">decorator</span><span class="p">,</span>
+            <span class="n">instance_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">instance_name</span><span class="p">,</span>
+            <span class="n">exclude_types</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">exclude_types</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">assignments_to_bind</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">group_values_by_key</span><span class="p">(</span><span class="n">assignments_nodes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">code</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">refactored_items</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">varname</span><span class="p">,</span> <span class="n">nodes</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">assignments_to_bind</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">bound_names</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">assignments_to_bind</span><span class="p">)</span> <span class="o">-</span> <span class="p">{</span><span class="n">varname</span><span class="p">}</span>
+            <span class="n">_rename_to_bound_var</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span>
+                <span class="n">rename_variables</span><span class="p">,</span>
+                <span class="n">old_to_new</span><span class="o">=</span><span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;self.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">bound_names</span><span class="p">},</span>
+            <span class="p">)</span>
+            <span class="k">yield</span> <span class="n">varname</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">_rename_to_bound_var</span><span class="p">,</span> <span class="n">nodes</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">refactored_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refactored_items</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_refactored_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">varname</span><span class="p">,</span> <span class="n">nodes</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">refactored_nodes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">_refactored_lines_gen</span><span class="p">(</span><span class="n">varname</span><span class="p">,</span> <span class="n">nodes</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">refactored_code</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_refactored_lines</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">s</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">refactored_code</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright NO COPYRIGHT.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -3,3 +3,4 @@
    :caption: Contents:
 
    module_docs/titbit
+   module_docs/titbit/ast_utils

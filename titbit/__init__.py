@@ -5,6 +5,9 @@ To make it easy to copy/paste the code elsewhere, include the import statements
 within the functions/objects that use them, when possible.
 """
 
+from titbit.ast_utils import (
+    rename_variables, bound_properties_refactor, BoundPropertiesRefactor, ensure_ast
+)
 
 def git_action_on_projects(
     projects,
@@ -23,6 +26,7 @@ def git_action_on_projects(
     >>> projects = [
     ...     some_package, "some_package_name", "some_package_dir_path"
     ... ]  # doctest: +SKIP
+    >>> # By default, the git action performed is to pull
     >>> git_action_on_projects(projects)  # doctest: +SKIP
 
     """

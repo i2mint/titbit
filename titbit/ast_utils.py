@@ -9,6 +9,7 @@ from collections import defaultdict
 import inspect
 from itertools import chain
 
+from i2 import Sig
 
 # -------------------------------------------------------------------------------
 # General utils
@@ -66,7 +67,10 @@ Code = Union[AST, str]
 @singledispatch
 def ensure_ast(code: AST) -> AST:
     """Ensures that the input is an AST node, returning it as-is if already an AST.
+
     If input is a string, parses it as Python code and returns the resulting AST.
+    If the input is a module object, it will get the code, parse it, and return an AST.
+    
     """
     assert isinstance(code, AST), "Input must be an AST node or a string."
     return code
@@ -266,6 +270,9 @@ class BoundPropertiesRefactor:
     """
     Generate code that refactors "flat code" into a reusable "controller" class.
 
+    You'd usually just use the `bound_properties_refactor` function for this, but 
+    this class's instances let's you get intermediate objects that can be useful.
+
     >>> code_str = '''
     ... apple = banana + carrot
     ... date = 'banana'
@@ -340,3 +347,34 @@ class BoundPropertiesRefactor:
 
     def __call__(self):
         return self.refactored_code
+
+
+@Sig(BoundPropertiesRefactor)
+def bound_properties_refactor(*args, **kwargs):
+    """
+    Generate code that refactors "flat code" into a reusable "controller" class.
+
+    >>> code_str = '''
+    ... apple = banana + carrot
+    ... date = 'banana'
+    ... egg = apple * 2
+    ... egg = egg + 1
+    ... '''
+    >>>
+    >>> refactored_code = bound_properties_refactor(code_str)
+    >>> print(refactored_code)  # doctest: +NORMALIZE_WHITESPACE
+    @property
+    def apple(self):
+        return banana + carrot
+    <BLANKLINE>
+    date = 'banana'
+    <BLANKLINE>
+    @property
+    def egg(self):
+        egg = self.apple * 2
+        egg = egg + 1
+        return egg
+    <BLANKLINE>
+
+    """
+    return BoundPropertiesRefactor(*args, **kwargs)()

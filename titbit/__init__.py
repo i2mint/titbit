@@ -6,8 +6,13 @@ within the functions/objects that use them, when possible.
 """
 
 from titbit.ast_utils import (
-    rename_variables, bound_properties_refactor, BoundPropertiesRefactor, ensure_ast
+    rename_variables,
+    bound_properties_refactor,
+    BoundPropertiesRefactor,
+    ensure_ast,
+    filter_code,
 )
+
 
 def git_action_on_projects(
     projects,
@@ -75,7 +80,7 @@ def mermaid_to_graphviz(
     mermaid_code, extra_replacements=(), *, prefix='', suffix='', egress=None
 ):
     """Converts mermaid code to graphviz code.
-    
+
     >>> mermaid_code = '''
     ... graph TD
     ... A --> B & C

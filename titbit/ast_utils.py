@@ -70,7 +70,7 @@ def ensure_ast(code: AST) -> AST:
 
     If input is a string, parses it as Python code and returns the resulting AST.
     If the input is a module object, it will get the code, parse it, and return an AST.
-    
+
     """
     assert isinstance(code, AST), "Input must be an AST node or a string."
     return code
@@ -86,6 +86,53 @@ def _(code: str) -> AST:
 def _(code: ModuleType) -> AST:
     """Parses a module and returns its AST."""
     return ensure_ast(inspect.getsource(code))
+
+
+def filter_code(code: Code, filt: Callable[[AST], bool]) -> Code:
+    """
+    Produce a version of the code that is filtered by the filt filter function.
+
+    :param code: The code string or ast.AST object to filter
+    :param filt: A function that takes an AST node and returns True or False
+
+    >>> code_str = '''
+    ... a = b + c
+    ... print(a)
+    ... d[0] = a
+    ... for i in range(1, 10):
+    ...     d[i] = d[i-1] + b
+    ... def f(x):
+    ...     return x + 1
+    ... e = [d, a, f]
+    ... '''
+    >>> import ast
+    >>> filtered_code_str = filter_code(code_str, lambda x: isinstance(x, ast.Assign))
+    >>> assert filtered_code_str.strip() == ('''
+    ... a = b + c
+    ... d[0] = a
+    ... e = [d, a, f]
+    ... '''.strip())
+
+    """
+    input_type = type(code)
+
+    code = ensure_ast(code)
+
+    # walk through the first layer of nodes in the AST and yield the ones that
+    # pass the filter. Do not go deeper than the first layer.
+
+    def _filter_lines(node):
+        for line in node.body:
+            if filt(line):
+                yield line
+
+    # create a new code object with the filtered lines
+    filtered_code = ast.Module(body=list(_filter_lines(code)), type_ignores=[])
+
+    if input_type is str:
+        return ast.unparse(filtered_code)
+
+    return filtered_code
 
 
 def ast_flat_hierarchy():
@@ -270,7 +317,7 @@ class BoundPropertiesRefactor:
     """
     Generate code that refactors "flat code" into a reusable "controller" class.
 
-    You'd usually just use the `bound_properties_refactor` function for this, but 
+    You'd usually just use the `bound_properties_refactor` function for this, but
     this class's instances let's you get intermediate objects that can be useful.
 
     >>> code_str = '''

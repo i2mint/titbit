@@ -13,7 +13,11 @@ from titbit.ast_utils import (
     filter_code,
 )
 
-from titbit.graphs import mermaid_to_graphviz, attribute_dependency_graph
+from titbit.graphs import (
+    mermaid_to_graphviz,
+    attribute_dependency_graph,
+    update_node_attributes,
+)
 
 
 def git_action_on_projects(

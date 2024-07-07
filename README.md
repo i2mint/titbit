@@ -30,7 +30,6 @@ Usage:
 Converts mermaid code to graphviz code.
 
 ```python
->>> from titbit import mermaid_to_graphviz
 >>> mermaid_code = '''
 ... graph TD
 ... A --> B & C
@@ -39,11 +38,21 @@ Converts mermaid code to graphviz code.
 >>> graphviz_code = mermaid_to_graphviz(mermaid_code)
 >>> print(graphviz_code)  # doctest: +NORMALIZE_WHITESPACE
 digraph G {
-<BLANKLINE>
-graph TD
     A -> B , C
     B , C -> D
-<BLANKLINE>
+}
+>>> mermaid_code = '''
+... graph TD
+...     A[Score] --> B[Part]
+...     B --> C[Measure]
+... '''
+>>> print(mermaid_to_graphviz(mermaid_code))
+digraph G {
+    A [label="Score"]
+    B [label="Part"]
+    A -> B
+    C [label="Measure"]
+    B -> C
 }
 ```
 

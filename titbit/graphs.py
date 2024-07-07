@@ -16,19 +16,32 @@ def mermaid_to_graphviz(
     >>> graphviz_code = mermaid_to_graphviz(mermaid_code)
     >>> print(graphviz_code)  # doctest: +NORMALIZE_WHITESPACE
     digraph G {
-    <BLANKLINE>
-    graph TD
         A -> B , C
         B , C -> D
-    <BLANKLINE>
+    }
+
+    >>> mermaid_code = '''
+    ... graph TD
+    ...     A[Score] --> B[Part]
+    ...     B --> C[Measure]
+    ... '''
+    >>> print(mermaid_to_graphviz(mermaid_code))
+    digraph G {
+        A [label="Score"]
+        B [label="Part"]
+        A -> B
+        C [label="Measure"]
+        B -> C
     }
     """
 
-    from lkj import regex_based_substitution, import_object
+    import re
 
     if not egress:
         egress = lambda s: s
     elif isinstance(egress, str):
+        from lkj import import_object
+
         egress = import_object(egress)
     else:
         assert callable(egress), f'egress must be a callable or a string, not {egress}'
@@ -37,17 +50,40 @@ def mermaid_to_graphviz(
         ('-->', '->'),
         ('&', ','),
     )
-    mermaid_to_graphviz_replacements = mermaid_to_graphviz_replacements + tuple(
-        extra_replacements
-    )
+    mermaid_to_graphviz_replacements += tuple(extra_replacements)
+
     s = mermaid_code
-    # remove the first line if it starts with 'graph'
+    # Remove the first line if it starts with 'graph'
     s = '\n'.join(s.split('\n')[1:]) if s.startswith('graph') else s
-    # carry out the replacements
-    s = regex_based_substitution(mermaid_to_graphviz_replacements)(s)
-    # add the prefix and suffix and wrap it in the graphviz graph declaration
-    s = 'digraph G {' + '\n' + f'{prefix}' + s + '\n' + suffix
-    return s + '}'
+
+    def generate_lines():
+        for line in s.split('\n'):
+            original_indent_len = len(line) - len(line.lstrip())
+            indent = ' ' * original_indent_len
+
+            # Extract node labels and convert to Graphviz format
+            node_label_pattern = re.compile(r'(\b\w+\b)\[([^\]]+)\]')
+            for match in node_label_pattern.finditer(line):
+                node, label = match.groups()
+                yield f'{indent}{node} [label="{label}"]'
+
+            # Remove labels from the line
+            line = node_label_pattern.sub(r'\1', line)
+
+            # Carry out the replacements
+            for old, new in mermaid_to_graphviz_replacements:
+                line = line.replace(old, new)
+
+            if '->' in line:
+                yield f'{indent}{line.lstrip()}'
+
+    # return generate_lines
+    # Accumulate the generator's output and wrap it in the Graphviz graph declaration
+    graphviz_code = (
+        'digraph G {\n' + prefix + '\n'.join(generate_lines()) + '\n' + suffix + '}'
+    )
+
+    return graphviz_code
 
 
 def attribute_dependency_graph(cls):
@@ -96,7 +132,7 @@ def update_node_attributes(
     :param shape: The shape attribute to update for the nodes.
     :param attributes: A dictionary of attributes to apply to the nodes.
     :param fillcolor: Color of interior of node. (Required: style='filled')
-    :param style: Set style information for components of the graph. 
+    :param style: Set style information for components of the graph.
     :param extra_attributes: Additional attributes to apply to the nodes.
 
     >>> import graphviz

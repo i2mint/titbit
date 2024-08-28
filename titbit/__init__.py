@@ -19,6 +19,8 @@ from titbit.graphs import (
     update_node_attributes,
 )
 
+from titbit.strings import md_toc_string
+
 
 def git_action_on_projects(
     projects,

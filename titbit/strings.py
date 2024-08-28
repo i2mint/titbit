@@ -38,6 +38,7 @@ def md_toc_string(md_src):
         - [ensure_ast](#ensure_ast)
 
     """
+    # pylint: disable=import-error
     import md_toc  # pip install md-toc
 
     if not os.path.isfile(md_src):

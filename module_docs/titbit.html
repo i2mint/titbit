@@ -8,7 +8,7 @@
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
 
   
   <!--[if lt IE 9]>
@@ -18,7 +18,7 @@
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
         <script src="../_static/documentation_options.js?v=92734c54"></script>
-        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../_static/toggleprompt.js?v=d7ede5d2"></script>
         <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -53,10 +53,11 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">titbit</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#titbit.git_action_on_projects"><code class="docutils literal notranslate"><span class="pre">git_action_on_projects()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#titbit.mermaid_to_graphviz"><code class="docutils literal notranslate"><span class="pre">mermaid_to_graphviz()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="titbit/ast_utils.html">titbit.ast_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="titbit/graphs.html">titbit.graphs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="titbit/strings.html">titbit.strings</a></li>
 </ul>
 
         </div>
@@ -105,28 +106,6 @@ A project can be a folder path or a module, or the name of a module/package.</p>
 <span class="gp">... </span><span class="p">]</span>  
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># By default, the git action performed is to pull</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">git_action_on_projects</span><span class="p">(</span><span class="n">projects</span><span class="p">)</span>  
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="titbit.mermaid_to_graphviz">
-<span class="sig-prename descclassname"><span class="pre">titbit.</span></span><span class="sig-name descname"><span class="pre">mermaid_to_graphviz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mermaid_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_replacements</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">egress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/titbit.html#mermaid_to_graphviz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#titbit.mermaid_to_graphviz" title="Link to this definition"></a></dt>
-<dd><p>Converts mermaid code to graphviz code.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mermaid_code</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
-<span class="gp">... </span><span class="s1">graph TD</span>
-<span class="gp">... </span><span class="s1">A --&gt; B &amp; C</span>
-<span class="gp">... </span><span class="s1">B &amp; C --&gt; D</span>
-<span class="gp">... </span><span class="s1">&#39;&#39;&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">graphviz_code</span> <span class="o">=</span> <span class="n">mermaid_to_graphviz</span><span class="p">(</span><span class="n">mermaid_code</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">graphviz_code</span><span class="p">)</span>  
-<span class="go">digraph G {</span>
-
-<span class="go">graph TD</span>
-<span class="go">    A -&gt; B , C</span>
-<span class="go">    B , C -&gt; D</span>
-
-<span class="go">}</span>
 </pre></div>
 </div>
 </dd></dl>

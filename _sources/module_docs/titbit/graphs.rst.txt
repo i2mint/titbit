@@ -1,0 +1,4 @@
+titbit.graphs
+=============
+.. automodule:: titbit.graphs
+   :members:

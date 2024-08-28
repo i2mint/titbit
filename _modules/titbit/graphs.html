@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>titbit.graphs &mdash; titbit 0.1.2 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=92734c54"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
+        <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            titbit
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/titbit.html">titbit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/titbit/ast_utils.html">titbit.ast_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/titbit/graphs.html">titbit.graphs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/titbit/strings.html">titbit.strings</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">titbit</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../titbit.html">titbit</a></li>
+      <li class="breadcrumb-item active">titbit.graphs</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for titbit.graphs</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Tools around graphs&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Iterable</span>
+
+
+<div class="viewcode-block" id="mermaid_to_graphviz">
+<a class="viewcode-back" href="../../module_docs/titbit/graphs.html#titbit.graphs.mermaid_to_graphviz">[docs]</a>
+<span class="k">def</span> <span class="nf">mermaid_to_graphviz</span><span class="p">(</span>
+    <span class="n">mermaid_code</span><span class="p">,</span> <span class="n">extra_replacements</span><span class="o">=</span><span class="p">(),</span> <span class="o">*</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">egress</span><span class="o">=</span><span class="kc">None</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts mermaid code to graphviz code.</span>
+
+<span class="sd">    &gt;&gt;&gt; mermaid_code = &#39;&#39;&#39;</span>
+<span class="sd">    ... graph TD</span>
+<span class="sd">    ... A --&gt; B &amp; C</span>
+<span class="sd">    ... B &amp; C --&gt; D</span>
+<span class="sd">    ... &#39;&#39;&#39;</span>
+<span class="sd">    &gt;&gt;&gt; graphviz_code = mermaid_to_graphviz(mermaid_code)</span>
+<span class="sd">    &gt;&gt;&gt; print(graphviz_code)  # doctest: +NORMALIZE_WHITESPACE</span>
+<span class="sd">    digraph G {</span>
+<span class="sd">        A -&gt; B , C</span>
+<span class="sd">        B , C -&gt; D</span>
+<span class="sd">    }</span>
+
+<span class="sd">    &gt;&gt;&gt; mermaid_code = &#39;&#39;&#39;</span>
+<span class="sd">    ... graph TD</span>
+<span class="sd">    ...     A[Score] --&gt; B[Part]</span>
+<span class="sd">    ...     B --&gt; C[Measure]</span>
+<span class="sd">    ... &#39;&#39;&#39;</span>
+<span class="sd">    &gt;&gt;&gt; print(mermaid_to_graphviz(mermaid_code))</span>
+<span class="sd">    digraph G {</span>
+<span class="sd">        A [label=&quot;Score&quot;]</span>
+<span class="sd">        B [label=&quot;Part&quot;]</span>
+<span class="sd">        A -&gt; B</span>
+<span class="sd">        C [label=&quot;Measure&quot;]</span>
+<span class="sd">        B -&gt; C</span>
+<span class="sd">    }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="kn">import</span> <span class="nn">re</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">egress</span><span class="p">:</span>
+        <span class="n">egress</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">egress</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">lkj</span> <span class="kn">import</span> <span class="n">import_object</span>
+
+        <span class="n">egress</span> <span class="o">=</span> <span class="n">import_object</span><span class="p">(</span><span class="n">egress</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">callable</span><span class="p">(</span><span class="n">egress</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39;egress must be a callable or a string, not </span><span class="si">{</span><span class="n">egress</span><span class="si">}</span><span class="s1">&#39;</span>
+
+    <span class="n">mermaid_to_graphviz_replacements</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">(</span><span class="s1">&#39;--&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;-&gt;&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;&amp;&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">mermaid_to_graphviz_replacements</span> <span class="o">+=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">extra_replacements</span><span class="p">)</span>
+
+    <span class="n">s</span> <span class="o">=</span> <span class="n">mermaid_code</span>
+    <span class="c1"># Remove the first line if it starts with &#39;graph&#39;</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:])</span> <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;graph&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="n">s</span>
+
+    <span class="k">def</span> <span class="nf">generate_lines</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">):</span>
+            <span class="n">original_indent_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">lstrip</span><span class="p">())</span>
+            <span class="n">indent</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="n">original_indent_len</span>
+
+            <span class="c1"># Extract node labels and convert to Graphviz format</span>
+            <span class="n">node_label_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(\b\w+\b)\[([^\]]+)\]&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">node_label_pattern</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
+                <span class="n">node</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+                <span class="k">yield</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">indent</span><span class="si">}{</span><span class="n">node</span><span class="si">}</span><span class="s1"> [label=&quot;</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s1">&quot;]&#39;</span>
+
+            <span class="c1"># Remove labels from the line</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">node_label_pattern</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\1&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+
+            <span class="c1"># Carry out the replacements</span>
+            <span class="k">for</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span> <span class="ow">in</span> <span class="n">mermaid_to_graphviz_replacements</span><span class="p">:</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="s1">&#39;-&gt;&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">indent</span><span class="si">}{</span><span class="n">line</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span>
+
+    <span class="c1"># return generate_lines</span>
+    <span class="c1"># Accumulate the generator&#39;s output and wrap it in the Graphviz graph declaration</span>
+    <span class="n">graphviz_code</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s1">&#39;digraph G {</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">prefix</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">generate_lines</span><span class="p">())</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">suffix</span> <span class="o">+</span> <span class="s1">&#39;}&#39;</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">graphviz_code</span></div>
+
+
+
+<div class="viewcode-block" id="attribute_dependency_graph">
+<a class="viewcode-back" href="../../module_docs/titbit/graphs.html#titbit.graphs.attribute_dependency_graph">[docs]</a>
+<span class="k">def</span> <span class="nf">attribute_dependency_graph</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a graphviz Digraph of the attribute dependencies of a class.</span>
+
+<span class="sd">    An attribute (method or property) is dependent on another attribute if it</span>
+<span class="sd">    uses it in its definition.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">i2</span> <span class="kn">import</span> <span class="n">Pipe</span>
+    <span class="kn">from</span> <span class="nn">i2.footprints</span> <span class="kn">import</span> <span class="n">attribute_dependencies</span>
+    <span class="kn">from</span> <span class="nn">meshed.itools</span> <span class="kn">import</span> <span class="n">graphviz_digraph</span>
+
+    <span class="n">dependency_graph</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">attribute_dependencies</span><span class="p">(</span><span class="bp">cls</span><span class="p">))</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">graphviz_digraph</span><span class="p">(</span><span class="n">dependency_graph</span><span class="p">)</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">graph_dict</span> <span class="o">=</span> <span class="n">dependency_graph</span>
+    <span class="k">return</span> <span class="n">g</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">_merge_non_none_values</span><span class="p">(</span><span class="n">d</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+    <span class="k">return</span> <span class="n">d</span>
+
+
+<span class="c1"># TODO: When moving graph viz tools, consider injecting node attributes in signature</span>
+<div class="viewcode-block" id="update_node_attributes">
+<a class="viewcode-back" href="../../module_docs/titbit/graphs.html#titbit.graphs.update_node_attributes">[docs]</a>
+<span class="k">def</span> <span class="nf">update_node_attributes</span><span class="p">(</span>
+    <span class="n">graph</span><span class="p">,</span>
+    <span class="n">node_ids</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span>
+    <span class="n">attributes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">shape</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">fillcolor</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">style</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">extra_attributes</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Update attributes for specific nodes in a Graphviz Digraph.</span>
+
+<span class="sd">    See list of all node attributes here: https://graphviz.org/docs/nodes/</span>
+
+<span class="sd">    :param graph: The graph instance.</span>
+<span class="sd">    :type graph: graphviz.graphs.Digraph</span>
+<span class="sd">    :param node_ids: A list of node identifiers (labels/IDs) to update.</span>
+<span class="sd">    :param shape: The shape attribute to update for the nodes.</span>
+<span class="sd">    :param attributes: A dictionary of attributes to apply to the nodes.</span>
+<span class="sd">    :param fillcolor: Color of interior of node. (Required: style=&#39;filled&#39;)</span>
+<span class="sd">    :param style: Set style information for components of the graph.</span>
+<span class="sd">    :param extra_attributes: Additional attributes to apply to the nodes.</span>
+
+<span class="sd">    &gt;&gt;&gt; import graphviz</span>
+<span class="sd">    &gt;&gt;&gt; g = graphviz.Digraph(&#39;G&#39;, filename=&#39;hello.gv&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; g.node(&#39;A&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; g.node(&#39;B&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; g.node(&#39;C&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; g.edges([&#39;AB&#39;, &#39;BC&#39;, &#39;CA&#39;])</span>
+<span class="sd">    &gt;&gt;&gt; g = update_node_attributes(g, [&#39;A&#39;, &#39;C&#39;], color=&#39;red&#39;, shape=&#39;box&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(g.source)  # doctest: +NORMALIZE_WHITESPACE</span>
+<span class="sd">    digraph G {</span>
+<span class="sd">        A</span>
+<span class="sd">        B</span>
+<span class="sd">        C</span>
+<span class="sd">        A -&gt; B</span>
+<span class="sd">        B -&gt; C</span>
+<span class="sd">        C -&gt; A</span>
+<span class="sd">        A [color=red shape=box]</span>
+<span class="sd">        C [color=red shape=box]</span>
+<span class="sd">    }</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">attributes</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">attributes</span> <span class="ow">or</span> <span class="p">{},</span> <span class="o">**</span><span class="n">extra_attributes</span><span class="p">)</span>
+
+    <span class="n">_merge_non_none_values</span><span class="p">(</span><span class="n">attributes</span><span class="p">,</span> <span class="n">fillcolor</span><span class="o">=</span><span class="n">fillcolor</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">node_id</span> <span class="ow">in</span> <span class="n">node_ids</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">node_id</span> <span class="ow">in</span> <span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">graph</span><span class="o">.</span><span class="n">body</span><span class="p">):</span>
+            <span class="n">graph</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="n">node_id</span><span class="p">,</span> <span class="o">**</span><span class="n">attributes</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node </span><span class="si">{</span><span class="n">node_id</span><span class="si">}</span><span class="s2"> not found in the graph.&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">graph</span></div>
+
+
+
+<div class="viewcode-block" id="graph_node_ids">
+<a class="viewcode-back" href="../../module_docs/titbit/graphs.html#titbit.graphs.graph_node_ids">[docs]</a>
+<span class="k">def</span> <span class="nf">graph_node_ids</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the node identifiers (labels/IDs) of a Graphviz Digraph.</span>
+
+<span class="sd">    WARNING: This is a fragile method that relies on the structure of the</span>
+<span class="sd">    graphviz Digraph object.</span>
+<span class="sd">    I could see no other way to do it in graphviz&#39;s API.</span>
+<span class="sd">    See: https://graphviz.readthedocs.io/en/stable/api.html</span>
+
+<span class="sd">    :param graph: The graph instance.</span>
+<span class="sd">    :type graph: graphviz.graphs.Digraph</span>
+
+<span class="sd">    &gt;&gt;&gt; import graphviz</span>
+<span class="sd">    &gt;&gt;&gt; g = graphviz.Digraph(&#39;G&#39;, filename=&#39;hello.gv&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; g.node(&#39;A&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; g.node(&#39;B&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; g.node(&#39;C&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; g.edges([&#39;AB&#39;, &#39;BC&#39;, &#39;CA&#39;])</span>
+<span class="sd">    &gt;&gt;&gt; sorted(graph_node_ids(g))</span>
+<span class="sd">    [&#39;A&#39;, &#39;B&#39;, &#39;C&#39;]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">gen</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">graph</span><span class="o">.</span><span class="n">body</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;-&gt;&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">nodes_in_edge_definition</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&gt;&#39;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">nodes</span> <span class="ow">in</span> <span class="n">nodes_in_edge_definition</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
+                        <span class="n">node</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                        <span class="k">if</span> <span class="n">node</span><span class="p">:</span>
+                            <span class="k">yield</span> <span class="n">node</span>
+
+    <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">gen</span><span class="p">())</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright NO COPYRIGHT.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

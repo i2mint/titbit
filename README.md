@@ -6,6 +6,28 @@ To install: `pip install titbit`
 
 # Examples
 
+## md_toc_string
+
+Generate a markdown table of contents (TOC) string from markdown.
+The markdown can be a string, a filepath, or a URL.
+
+```python
+>>> url = 'https://raw.githubusercontent.com/i2mint/titbit/master/README.md'
+>>> toc_string = md_toc_string(url)
+>>> print(toc_string)
+```
+
+```
+- [titbit](#titbit)
+- [Examples](#examples)
+    - [md_toc_string](#md_toc_string)
+    - [git_action_on_projects](#git_action_on_projects)
+    - [mermaid_to_graphviz](#mermaid_to_graphviz)
+    - [filter_code](#filter_code)
+    - [bound_properties_refactor](#bound_properties_refactor)
+    - [ensure_ast](#ensure_ast)
+```
+
 ## git_action_on_projects
 
 Take git actions all the projects in the list of projects.

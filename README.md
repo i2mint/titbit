@@ -4,6 +4,8 @@ A place to dump might-be-useful-again code as an alternative of leaving in a not
 
 To install: `pip install titbit`
 
+[Documentation](https://i2mint.github.io/titbit/)
+
 # Examples
 
 ## md_toc_string

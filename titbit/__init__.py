@@ -22,6 +22,9 @@ from titbit.graphs import (
 from titbit.strings import md_toc_string
 
 
+from titbit.mappings import generate_key_values
+
+
 def git_action_on_projects(
     projects,
     action='pull',

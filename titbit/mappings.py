@@ -51,22 +51,6 @@ fields_as_keys.__doc__ = """
     {1: {'id': 1, 'value': 'A'}, 2: {'id': 2, 'value': 'B'}}
 """
 
-fields_as_values = lambda val_fields: partial(
-    iterable_to_dict, value_func=itemgetter(*val_fields)
-)
-fields_as_values.__doc__ = """
-    Create a dictionary where the values are derived from specific fields in the items of the iterable.
-
-    Args:
-        val_fields (int or tuple of int): The index or indices of the fields to use as values.
-
-    Returns:
-        Callable: A function that takes an iterable and returns a dictionary.
-
-    >>> data = [{'id': 1, 'value': 'A'}, {'id': 2, 'value': 'B'}]
-    >>> fields_as_values(['value'])(data)
-    {'id': 'A', 'id': 'B'}
-"""
 
 fields_popped = lambda key_fields: partial(
     iterable_to_dict, key_func=lambda x: x.pop(key_fields)

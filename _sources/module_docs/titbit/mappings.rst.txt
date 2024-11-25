@@ -1,0 +1,4 @@
+titbit.mappings
+===============
+.. automodule:: titbit.mappings
+   :members:

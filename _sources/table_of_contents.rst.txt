@@ -5,4 +5,5 @@
    module_docs/titbit
    module_docs/titbit/ast_utils
    module_docs/titbit/graphs
+   module_docs/titbit/mappings
    module_docs/titbit/strings

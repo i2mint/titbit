@@ -9,8 +9,8 @@ def ensure_content_bytes(src, *, encoding: str = "utf-8"):
         return src
     elif isinstance(src, str):
         if os.path.isfile(src):
-            return open(src, 'rb').read()
-        elif src.startswith('http://') or src.startswith('https://'):
+            return open(src, "rb").read()
+        elif src.startswith("http://") or src.startswith("https://"):
             import requests
 
             return requests.get(src).content

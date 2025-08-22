@@ -1,4 +1,4 @@
-"""A place to dump things that might be useful in the future, 
+"""A place to dump things that might be useful in the future,
 but we're not sure enough to find a proper home for it yet.
 
 To make it easy to copy/paste the code elsewhere, include the import statements
@@ -27,9 +27,9 @@ from titbit.mappings import generate_key_values
 
 def git_action_on_projects(
     projects,
-    action='pull',
+    action="pull",
     *,
-    on_error=lambda project, e: print(f'Error with {project=}: {e}'),
+    on_error=lambda project, e: print(f"Error with {project=}: {e}"),
     egress=lambda result: result.stdout,
 ):
     """Take git actions all the projects in the list of projects.
@@ -50,7 +50,7 @@ def git_action_on_projects(
     import subprocess
 
     def _pkg_folder_of_module(module):
-        if hasattr(module, '__path__'):
+        if hasattr(module, "__path__"):
             return os.path.dirname(module.__path__[0])
         elif isinstance(module, str):
             return _pkg_folder_of_module(__import__(module))
@@ -68,16 +68,16 @@ def git_action_on_projects(
         try:
             # Execute git pull in the specified folder
             result = subprocess.run(
-                ['git', '-C', folder, action],
+                ["git", "-C", folder, action],
                 check=True,
                 text=True,
                 capture_output=True,
             )
             return egress(result)
         except subprocess.CalledProcessError as e:
-            print(f'Failed {action=} on {folder}: {e}')
+            print(f"Failed {action=} on {folder}: {e}")
         except Exception as e:
-            print(f'An error occurred with {folder}: {e}')
+            print(f"An error occurred with {folder}: {e}")
 
     for project in projects:
         try:

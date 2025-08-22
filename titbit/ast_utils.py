@@ -148,8 +148,8 @@ def ast_flat_hierarchy():
     ['Bytes', 'Ellipsis', 'NameConstant', 'Num', 'Str']
 
     """
-    kv_pairs = yield_class_hierarchy(ast, path=('ast',), base_class=ast.AST)
-    kv_pairs = (('.'.join(k), v) for k, v in kv_pairs)  # mk dot-paths from tuple paths
+    kv_pairs = yield_class_hierarchy(ast, path=("ast",), base_class=ast.AST)
+    kv_pairs = ((".".join(k), v) for k, v in kv_pairs)  # mk dot-paths from tuple paths
     return group_values_by_key(kv_pairs)
 
 
@@ -282,25 +282,25 @@ def generate_property_refactor_line(
     varname,
     nodes,
     *,
-    indent='',
-    decorator='@property',
-    instance_name='self',
+    indent="",
+    decorator="@property",
+    instance_name="self",
     exclude_types=(ast.Constant,),
 ):
     if len(nodes) == 1 and isinstance(nodes[0], exclude_types):
-        yield f"{indent}{varname} = {ast.unparse(nodes[0]).strip()}" + f'\n{indent}'
+        yield f"{indent}{varname} = {ast.unparse(nodes[0]).strip()}" + f"\n{indent}"
     else:
         if decorator:
-            yield f'{indent}{decorator}'
-        yield f'{indent}def {varname}({instance_name}):'
+            yield f"{indent}{decorator}"
+        yield f"{indent}def {varname}({instance_name}):"
         yield (
-            '\n'.join(f"{indent}\t{x}" for x in property_method_lines(varname, nodes))
-            + f'\n{indent}'
+            "\n".join(f"{indent}\t{x}" for x in property_method_lines(varname, nodes))
+            + f"\n{indent}"
         )
 
 
 def generate_lines(
-    code_str, *, sep: str = '\n', decorator='@property', instance_name='self'
+    code_str, *, sep: str = "\n", decorator="@property", instance_name="self"
 ):
     kwargs = dict(decorator=decorator, instance_name=instance_name)
     for varname, nodes in group_values_by_key(assignments_nodes(code_str)).items():
@@ -346,10 +346,10 @@ class BoundPropertiesRefactor:
 
     code: Code
 
-    prefix: str = ''
-    indent: str = ''
-    decorator: str = '@property'
-    instance_name: str = 'self'
+    prefix: str = ""
+    indent: str = ""
+    decorator: str = "@property"
+    instance_name: str = "self"
     exclude_types = (ast.Constant,)
 
     def __post_init__(self):
@@ -371,7 +371,7 @@ class BoundPropertiesRefactor:
             bound_names = set(self.assignments_to_bind) - {varname}
             _rename_to_bound_var = partial(
                 rename_variables,
-                old_to_new={name: f'self.{name}' for name in bound_names},
+                old_to_new={name: f"self.{name}" for name in bound_names},
             )
             yield varname, list(map(_rename_to_bound_var, nodes))
 
@@ -386,10 +386,10 @@ class BoundPropertiesRefactor:
 
     @property
     def refactored_code(self):
-        s = ''
+        s = ""
         if self.prefix:
             s += self.prefix
-        s += '\n'.join(self._refactored_lines)
+        s += "\n".join(self._refactored_lines)
         return s
 
     def __call__(self):

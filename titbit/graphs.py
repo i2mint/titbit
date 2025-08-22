@@ -4,7 +4,7 @@ from typing import Optional, Iterable
 
 
 def mermaid_to_graphviz(
-    mermaid_code, extra_replacements=(), *, prefix='', suffix='', egress=None
+    mermaid_code, extra_replacements=(), *, prefix="", suffix="", egress=None
 ):
     """Converts mermaid code to graphviz code.
 
@@ -44,43 +44,43 @@ def mermaid_to_graphviz(
 
         egress = import_object(egress)
     else:
-        assert callable(egress), f'egress must be a callable or a string, not {egress}'
+        assert callable(egress), f"egress must be a callable or a string, not {egress}"
 
     mermaid_to_graphviz_replacements = (
-        ('-->', '->'),
-        ('&', ','),
+        ("-->", "->"),
+        ("&", ","),
     )
     mermaid_to_graphviz_replacements += tuple(extra_replacements)
 
     s = mermaid_code
     # Remove the first line if it starts with 'graph'
-    s = '\n'.join(s.split('\n')[1:]) if s.startswith('graph') else s
+    s = "\n".join(s.split("\n")[1:]) if s.startswith("graph") else s
 
     def generate_lines():
-        for line in s.split('\n'):
+        for line in s.split("\n"):
             original_indent_len = len(line) - len(line.lstrip())
-            indent = ' ' * original_indent_len
+            indent = " " * original_indent_len
 
             # Extract node labels and convert to Graphviz format
-            node_label_pattern = re.compile(r'(\b\w+\b)\[([^\]]+)\]')
+            node_label_pattern = re.compile(r"(\b\w+\b)\[([^\]]+)\]")
             for match in node_label_pattern.finditer(line):
                 node, label = match.groups()
                 yield f'{indent}{node} [label="{label}"]'
 
             # Remove labels from the line
-            line = node_label_pattern.sub(r'\1', line)
+            line = node_label_pattern.sub(r"\1", line)
 
             # Carry out the replacements
             for old, new in mermaid_to_graphviz_replacements:
                 line = line.replace(old, new)
 
-            if '->' in line:
-                yield f'{indent}{line.lstrip()}'
+            if "->" in line:
+                yield f"{indent}{line.lstrip()}"
 
     # return generate_lines
     # Accumulate the generator's output and wrap it in the Graphviz graph declaration
     graphviz_code = (
-        'digraph G {\n' + prefix + '\n'.join(generate_lines()) + '\n' + suffix + '}'
+        "digraph G {\n" + prefix + "\n".join(generate_lines()) + "\n" + suffix + "}"
     )
 
     return graphviz_code
@@ -192,12 +192,12 @@ def graph_node_ids(graph) -> set:
 
     def gen():
         for line in graph.body:
-            if '->' not in line:
+            if "->" not in line:
                 yield line.split()[0]
             else:
-                nodes_in_edge_definition = line.split('->')
+                nodes_in_edge_definition = line.split("->")
                 for nodes in nodes_in_edge_definition:
-                    for node in nodes.split(','):
+                    for node in nodes.split(","):
                         node = node.strip()
                         if node:
                             yield node

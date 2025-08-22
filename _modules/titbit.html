@@ -6,16 +6,16 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>titbit &mdash; titbit 0.1.2 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../_static/documentation_options.js?v=92734c54"></script>
-      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/toggleprompt.js?v=d7ede5d2"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -85,7 +85,7 @@
 <span class="sd">within the functions/objects that use them, when possible.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">titbit.ast_utils</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">titbit.ast_utils</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">rename_variables</span><span class="p">,</span>
     <span class="n">bound_properties_refactor</span><span class="p">,</span>
     <span class="n">BoundPropertiesRefactor</span><span class="p">,</span>
@@ -93,21 +93,21 @@
     <span class="n">filter_code</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">titbit.graphs</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">titbit.graphs</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">mermaid_to_graphviz</span><span class="p">,</span>
     <span class="n">attribute_dependency_graph</span><span class="p">,</span>
     <span class="n">update_node_attributes</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">titbit.strings</span> <span class="kn">import</span> <span class="n">md_toc_string</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">titbit.strings</span><span class="w"> </span><span class="kn">import</span> <span class="n">md_toc_string</span>
 
 
-<span class="kn">from</span> <span class="nn">titbit.mappings</span> <span class="kn">import</span> <span class="n">generate_key_values</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">titbit.mappings</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_key_values</span>
 
 
 <div class="viewcode-block" id="git_action_on_projects">
 <a class="viewcode-back" href="../module_docs/titbit.html#titbit.git_action_on_projects">[docs]</a>
-<span class="k">def</span> <span class="nf">git_action_on_projects</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">git_action_on_projects</span><span class="p">(</span>
     <span class="n">projects</span><span class="p">,</span>
     <span class="n">action</span><span class="o">=</span><span class="s1">&#39;pull&#39;</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
@@ -128,10 +128,10 @@
 <span class="sd">    &gt;&gt;&gt; git_action_on_projects(projects)  # doctest: +SKIP</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">import</span> <span class="nn">os</span>
-    <span class="kn">import</span> <span class="nn">subprocess</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
 
-    <span class="k">def</span> <span class="nf">_pkg_folder_of_module</span><span class="p">(</span><span class="n">module</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_pkg_folder_of_module</span><span class="p">(</span><span class="n">module</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="s1">&#39;__path__&#39;</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">__path__</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -139,13 +139,13 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Can&#39;t resolve this module to a folder: </span><span class="si">{</span><span class="n">module</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_resolve_folder</span><span class="p">(</span><span class="n">project</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_resolve_folder</span><span class="p">(</span><span class="n">project</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">project</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">project</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">_pkg_folder_of_module</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_git_action</span><span class="p">(</span><span class="n">project</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_git_action</span><span class="p">(</span><span class="n">project</span><span class="p">):</span>
         <span class="n">folder</span> <span class="o">=</span> <span class="n">_resolve_folder</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># Execute git pull in the specified folder</span>

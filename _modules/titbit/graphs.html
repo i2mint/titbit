@@ -6,16 +6,16 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>titbit.graphs &mdash; titbit 0.1.2 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../../_static/documentation_options.js?v=92734c54"></script>
-      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -81,12 +81,12 @@
   <h1>Source code for titbit.graphs</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Tools around graphs&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Iterable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Iterable</span>
 
 
 <div class="viewcode-block" id="mermaid_to_graphviz">
 <a class="viewcode-back" href="../../module_docs/titbit/graphs.html#titbit.graphs.mermaid_to_graphviz">[docs]</a>
-<span class="k">def</span> <span class="nf">mermaid_to_graphviz</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">mermaid_to_graphviz</span><span class="p">(</span>
     <span class="n">mermaid_code</span><span class="p">,</span> <span class="n">extra_replacements</span><span class="o">=</span><span class="p">(),</span> <span class="o">*</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">egress</span><span class="o">=</span><span class="kc">None</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts mermaid code to graphviz code.</span>
@@ -118,12 +118,12 @@
 <span class="sd">    }</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="kn">import</span> <span class="nn">re</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">egress</span><span class="p">:</span>
         <span class="n">egress</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">egress</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">lkj</span> <span class="kn">import</span> <span class="n">import_object</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">lkj</span><span class="w"> </span><span class="kn">import</span> <span class="n">import_object</span>
 
         <span class="n">egress</span> <span class="o">=</span> <span class="n">import_object</span><span class="p">(</span><span class="n">egress</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
@@ -139,7 +139,7 @@
     <span class="c1"># Remove the first line if it starts with &#39;graph&#39;</span>
     <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:])</span> <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;graph&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="n">s</span>
 
-    <span class="k">def</span> <span class="nf">generate_lines</span><span class="p">():</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">generate_lines</span><span class="p">():</span>
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">):</span>
             <span class="n">original_indent_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">lstrip</span><span class="p">())</span>
             <span class="n">indent</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="n">original_indent_len</span>
@@ -172,16 +172,16 @@
 
 <div class="viewcode-block" id="attribute_dependency_graph">
 <a class="viewcode-back" href="../../module_docs/titbit/graphs.html#titbit.graphs.attribute_dependency_graph">[docs]</a>
-<span class="k">def</span> <span class="nf">attribute_dependency_graph</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">attribute_dependency_graph</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a graphviz Digraph of the attribute dependencies of a class.</span>
 
 <span class="sd">    An attribute (method or property) is dependent on another attribute if it</span>
 <span class="sd">    uses it in its definition.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">i2</span> <span class="kn">import</span> <span class="n">Pipe</span>
-    <span class="kn">from</span> <span class="nn">i2.footprints</span> <span class="kn">import</span> <span class="n">attribute_dependencies</span>
-    <span class="kn">from</span> <span class="nn">meshed.itools</span> <span class="kn">import</span> <span class="n">graphviz_digraph</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">i2</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipe</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">i2.footprints</span><span class="w"> </span><span class="kn">import</span> <span class="n">attribute_dependencies</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">meshed.itools</span><span class="w"> </span><span class="kn">import</span> <span class="n">graphviz_digraph</span>
 
     <span class="n">dependency_graph</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">attribute_dependencies</span><span class="p">(</span><span class="bp">cls</span><span class="p">))</span>
     <span class="n">g</span> <span class="o">=</span> <span class="n">graphviz_digraph</span><span class="p">(</span><span class="n">dependency_graph</span><span class="p">)</span>
@@ -190,7 +190,7 @@
 
 
 
-<span class="k">def</span> <span class="nf">_merge_non_none_values</span><span class="p">(</span><span class="n">d</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_merge_non_none_values</span><span class="p">(</span><span class="n">d</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
@@ -200,7 +200,7 @@
 <span class="c1"># TODO: When moving graph viz tools, consider injecting node attributes in signature</span>
 <div class="viewcode-block" id="update_node_attributes">
 <a class="viewcode-back" href="../../module_docs/titbit/graphs.html#titbit.graphs.update_node_attributes">[docs]</a>
-<span class="k">def</span> <span class="nf">update_node_attributes</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">update_node_attributes</span><span class="p">(</span>
     <span class="n">graph</span><span class="p">,</span>
     <span class="n">node_ids</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span>
     <span class="n">attributes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -260,7 +260,7 @@
 
 <div class="viewcode-block" id="graph_node_ids">
 <a class="viewcode-back" href="../../module_docs/titbit/graphs.html#titbit.graphs.graph_node_ids">[docs]</a>
-<span class="k">def</span> <span class="nf">graph_node_ids</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">graph_node_ids</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the node identifiers (labels/IDs) of a Graphviz Digraph.</span>
 
@@ -282,7 +282,7 @@
 <span class="sd">    [&#39;A&#39;, &#39;B&#39;, &#39;C&#39;]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">gen</span><span class="p">():</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">gen</span><span class="p">():</span>
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">graph</span><span class="o">.</span><span class="n">body</span><span class="p">:</span>
             <span class="k">if</span> <span class="s1">&#39;-&gt;&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
                 <span class="k">yield</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>

@@ -16,7 +16,7 @@ def generate_key_values(
     *,
     key_func: Callable[[T], KT] = identity,
     value_func: Callable[[T], VT] = identity,
-    egress: Callable[[Iterator[tuple[KT, VT]]], KeyValueAggregate] = identity
+    egress: Callable[[Iterator[tuple[KT, VT]]], KeyValueAggregate] = identity,
 ) -> KeyValueAggregate:
     return egress((key_func(item), value_func(item)) for item in iterable)
 

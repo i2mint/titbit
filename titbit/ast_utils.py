@@ -20,11 +20,11 @@ def yield_class_hierarchy(
     module, base_class: type, path: Sequence[str] = ()
 ) -> Iterable[tuple[Sequence[str], str]]:
     """
-    Prints out the hierarchy of AST types defined in the ast module.
+    Yield the hierarchy of AST types defined in the ast module.
 
     Args:
-    - module: The module to visit
-    - base_class: The current base class to print subclasses for
+        module: The module to visit
+        base_class: The current base class to yield subclasses for
     """
     # Iterate through all classes defined in the module.
     for _, obj in inspect.getmembers(module, inspect.isclass):
@@ -248,7 +248,7 @@ def rename_variables(code: Code, old_to_new: OldToNew) -> ast.AST:
 
 def assignments_nodes(code: Code):
     """
-    Yield the `(varname, var_expression)` pairs for all assignment nodes of `code_str`.
+    Yield the ``(varname, var_expression)`` pairs for all assignment nodes of ``code``.
     """
     code = ensure_ast(code)
 
@@ -319,8 +319,8 @@ class BoundPropertiesRefactor:
     """
     Generate code that refactors "flat code" into a reusable "controller" class.
 
-    You'd usually just use the `bound_properties_refactor` function for this, but
-    this class's instances let's you get intermediate objects that can be useful.
+    You'd usually just use the ``bound_properties_refactor`` function for this, but
+    this class's instances let you get intermediate objects that can be useful.
 
     >>> code_str = '''
     ... apple = banana + carrot

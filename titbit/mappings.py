@@ -31,16 +31,19 @@ def generate_key_values(
 from functools import partial
 from operator import itemgetter
 
-iterable_to_dict = partial(generate_key_values, egress=dict)
-iterable_to_dict.__doc__ = """
-    Convert an iterable of key-value pairs to a dictionary.
+def iterable_to_dict(iterable, *, key_func=identity, value_func=identity):
+    """Aggregate an iterable into a ``dict`` (``generate_key_values`` with
+    ``egress=dict``). By default each item maps to itself; pass ``key_func``
+    and/or ``value_func`` to shape the keys and values.
 
-    >>> iterable_to_dict([('a', 1), ('b', 2)])
+    >>> from operator import itemgetter
+    >>> pairs = [('a', 1), ('b', 2)]
+    >>> iterable_to_dict(pairs, key_func=itemgetter(0), value_func=itemgetter(1))
     {'a': 1, 'b': 2}
-
-    >>> iterable_to_dict([('key1', 'value1'), ('key2', 'value2')])
-    {'key1': 'value1', 'key2': 'value2'}
-"""
+    """
+    return generate_key_values(
+        iterable, key_func=key_func, value_func=value_func, egress=dict
+    )
 
 fields_as_keys = lambda key_fields: partial(
     iterable_to_dict, key_func=itemgetter(*key_fields)

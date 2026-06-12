@@ -92,7 +92,15 @@ def attribute_dependency_graph(cls):
     Return a graphviz Digraph of the attribute dependencies of a class.
 
     An attribute (method or property) is dependent on another attribute if it
-    uses it in its definition.
+    uses it in its definition. (The class's source must be available to
+    ``inspect`` — interactively defined classes won't work.)
+
+    >>> from titbit.ast_utils import BoundPropertiesRefactor
+    >>> g = attribute_dependency_graph(BoundPropertiesRefactor)
+    >>> type(g).__name__
+    'Digraph'
+    >>> 'refactored_code' in g.source
+    True
     """
     from i2 import Pipe
     from i2.footprints import attribute_dependencies

@@ -157,7 +157,11 @@ def ast_flat_hierarchy():
 
 @lru_cache
 def ast_class_names():
-    """The set of names of ast classes"""
+    """The set of names of ast classes
+
+    >>> 'BinOp' in ast_class_names()
+    True
+    """
     return set(chain.from_iterable(ast_flat_hierarchy().values()))
 
 
@@ -270,7 +274,11 @@ def assignments_nodes(code: Code):
 
 
 def assignments_code(code: Code) -> Iterable[tuple[str, str]]:
-    """Yield (name, code_definition) variable assignments pairs."""
+    """Yield (name, code_definition) variable assignments pairs.
+
+    >>> list(assignments_code('a = 1\\nb = a + 2'))
+    [('a', '1'), ('b', 'a + 2')]
+    """
     code = ensure_ast(code)
     for name, ast_node in assignments_nodes(code):
         yield name, ast.unparse(ast_node)

@@ -31,6 +31,7 @@ def generate_key_values(
 from functools import partial
 from operator import itemgetter
 
+
 def iterable_to_dict(iterable, *, key_func=identity, value_func=identity):
     """Aggregate an iterable into a ``dict`` (``generate_key_values`` with
     ``egress=dict``). By default each item maps to itself; pass ``key_func``
@@ -44,6 +45,7 @@ def iterable_to_dict(iterable, *, key_func=identity, value_func=identity):
     return generate_key_values(
         iterable, key_func=key_func, value_func=value_func, egress=dict
     )
+
 
 fields_as_keys = lambda key_fields: partial(
     iterable_to_dict, key_func=itemgetter(*key_fields)

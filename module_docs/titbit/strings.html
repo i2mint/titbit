@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>titbit.strings &mdash; titbit 0.1.10 documentation</title>
+  <title>titbit.strings &mdash; titbit 0.1.11 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=bafade30"></script>
+      <script src="../../_static/documentation_options.js?v=1e825a29"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -53,6 +53,7 @@
 <li class="toctree-l1"><a class="reference internal" href="graphs.html">titbit.graphs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="mappings.html">titbit.mappings</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">titbit.strings</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#titbit.strings.ensure_content_bytes"><code class="docutils literal notranslate"><span class="pre">ensure_content_bytes()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#titbit.strings.md_toc_string"><code class="docutils literal notranslate"><span class="pre">md_toc_string()</span></code></a></li>
 </ul>
 </li>
@@ -85,6 +86,20 @@
   <section id="module-titbit.strings">
 <span id="titbit-strings"></span><h1>titbit.strings<a class="headerlink" href="#module-titbit.strings" title="Link to this heading"></a></h1>
 <p>Tools for string parsing and manipulation.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="titbit.strings.ensure_content_bytes">
+<span class="sig-prename descclassname"><span class="pre">titbit.strings.</span></span><span class="sig-name descname"><span class="pre">ensure_content_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'utf-8'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/titbit/strings.html#ensure_content_bytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#titbit.strings.ensure_content_bytes" title="Link to this definition"></a></dt>
+<dd><p>Resolve <code class="docutils literal notranslate"><span class="pre">src</span></code> to content bytes: bytes pass through; a string is read
+as a file path if one exists, fetched if it’s an http(s) URL, and encoded
+otherwise.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ensure_content_bytes</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;xyz&#39;</span><span class="p">)</span>
+<span class="go">b&#39;xyz&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ensure_content_bytes</span><span class="p">(</span><span class="s1">&#39;abc&#39;</span><span class="p">)</span>
+<span class="go">b&#39;abc&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="titbit.strings.md_toc_string">
 <span class="sig-prename descclassname"><span class="pre">titbit.strings.</span></span><span class="sig-name descname"><span class="pre">md_toc_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">md_src</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/titbit/strings.html#md_toc_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#titbit.strings.md_toc_string" title="Link to this definition"></a></dt>

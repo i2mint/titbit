@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>titbit.mappings &mdash; titbit 0.1.10 documentation</title>
+  <title>titbit.mappings &mdash; titbit 0.1.11 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=bafade30"></script>
+      <script src="../../_static/documentation_options.js?v=1e825a29"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -55,6 +55,8 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">titbit.mappings</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#titbit.mappings.fields_as_keys"><code class="docutils literal notranslate"><span class="pre">fields_as_keys()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#titbit.mappings.fields_popped"><code class="docutils literal notranslate"><span class="pre">fields_popped()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#titbit.mappings.generate_key_values"><code class="docutils literal notranslate"><span class="pre">generate_key_values()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#titbit.mappings.identity"><code class="docutils literal notranslate"><span class="pre">identity()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#titbit.mappings.iterable_to_dict"><code class="docutils literal notranslate"><span class="pre">iterable_to_dict()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#titbit.mappings.key_and_value_fields"><code class="docutils literal notranslate"><span class="pre">key_and_value_fields()</span></code></a></li>
 </ul>
@@ -132,6 +134,23 @@ and those fields are removed (popped) from the items.</p>
 <span class="go">{1: {&#39;value&#39;: &#39;A&#39;}, 2: {&#39;value&#39;: &#39;B&#39;}}</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="titbit.mappings.generate_key_values">
+<span class="sig-prename descclassname"><span class="pre">titbit.mappings.</span></span><span class="sig-name descname"><span class="pre">generate_key_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">iterable:</span> <span class="pre">~collections.abc.Iterable,</span> <span class="pre">*,</span> <span class="pre">key_func:</span> <span class="pre">~collections.abc.Callable[[T],</span> <span class="pre">KT]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">identity&gt;,</span> <span class="pre">value_func:</span> <span class="pre">~collections.abc.Callable[[T],</span> <span class="pre">VT]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">identity&gt;,</span> <span class="pre">egress:</span> <span class="pre">~collections.abc.Callable[[~collections.abc.Iterator[tuple[KT,</span> <span class="pre">VT]]],</span> <span class="pre">~titbit.mappings.KeyValueAggregate]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">identity&gt;</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">KeyValueAggregate</span></span></span><a class="reference internal" href="../../_modules/titbit/mappings.html#generate_key_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#titbit.mappings.generate_key_values" title="Link to this definition"></a></dt>
+<dd><p>Make <code class="docutils literal notranslate"><span class="pre">(key_func(item),</span> <span class="pre">value_func(item))</span></code> pairs from an iterable,
+aggregated by <code class="docutils literal notranslate"><span class="pre">egress</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">dict</span></code>; default: the pairs generator).</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">generate_key_values</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">key_func</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">egress</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+<span class="go">{&#39;1&#39;: 1, &#39;2&#39;: 2}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="titbit.mappings.identity">
+<span class="sig-prename descclassname"><span class="pre">titbit.mappings.</span></span><span class="sig-name descname"><span class="pre">identity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/titbit/mappings.html#identity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#titbit.mappings.identity" title="Link to this definition"></a></dt>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">x</span></code> unchanged (the default key/value/egress function).</p>
 </dd></dl>
 
 <dl class="py function">

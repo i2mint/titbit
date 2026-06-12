@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>titbit.ast_utils &mdash; titbit 0.1.10 documentation</title>
+  <title>titbit.ast_utils &mdash; titbit 0.1.11 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=bafade30"></script>
+      <script src="../../_static/documentation_options.js?v=1e825a29"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -103,11 +103,11 @@
     <span class="n">module</span><span class="p">,</span> <span class="n">base_class</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Prints out the hierarchy of AST types defined in the ast module.</span>
+<span class="sd">    Yield the hierarchy of AST types defined in the ast module.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">    - module: The module to visit</span>
-<span class="sd">    - base_class: The current base class to print subclasses for</span>
+<span class="sd">        module: The module to visit</span>
+<span class="sd">        base_class: The current base class to yield subclasses for</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Iterate through all classes defined in the module.</span>
     <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">):</span>
@@ -272,10 +272,23 @@
 <span class="n">OldToNew</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">CallableMapping</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">KT</span><span class="p">,</span> <span class="n">VT</span><span class="p">]]</span>
 
 
+<div class="viewcode-block" id="ensure_callable_mapping">
+<a class="viewcode-back" href="../../module_docs/titbit/ast_utils.html#titbit.ast_utils.ensure_callable_mapping">[docs]</a>
 <span class="nd">@singledispatch</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">ensure_callable_mapping</span><span class="p">(</span><span class="n">mapping</span><span class="p">:</span> <span class="n">CallableMapping</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CallableMapping</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Ensure ``mapping`` is callable: callables pass through unchanged, and</span>
+<span class="sd">    ``Mapping`` instances become key-&gt;value getter functions that fall back</span>
+<span class="sd">    to the key itself when it&#39;s missing.</span>
+
+<span class="sd">    &gt;&gt;&gt; ensure_callable_mapping(len) is len</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; getter = ensure_callable_mapping({&#39;a&#39;: 1})</span>
+<span class="sd">    &gt;&gt;&gt; getter(&#39;a&#39;), getter(&#39;missing&#39;)</span>
+<span class="sd">    (1, &#39;missing&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">assert</span> <span class="nb">callable</span><span class="p">(</span><span class="n">mapping</span><span class="p">),</span> <span class="s2">&quot;mapping must be callable.&quot;</span>
-    <span class="k">return</span> <span class="n">mapping</span>
+    <span class="k">return</span> <span class="n">mapping</span></div>
+
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_default_to_key</span><span class="p">(</span><span class="n">mapping</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -352,7 +365,7 @@
 <a class="viewcode-back" href="../../module_docs/titbit/ast_utils.html#titbit.ast_utils.assignments_nodes">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">assignments_nodes</span><span class="p">(</span><span class="n">code</span><span class="p">:</span> <span class="n">Code</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Yield the `(varname, var_expression)` pairs for all assignment nodes of `code_str`.</span>
+<span class="sd">    Yield the ``(varname, var_expression)`` pairs for all assignment nodes of ``code``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">code</span> <span class="o">=</span> <span class="n">ensure_ast</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
 
@@ -391,6 +404,8 @@
 
 
 
+<div class="viewcode-block" id="generate_property_refactor_line">
+<a class="viewcode-back" href="../../module_docs/titbit/ast_utils.html#titbit.ast_utils.generate_property_refactor_line">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">generate_property_refactor_line</span><span class="p">(</span>
     <span class="n">varname</span><span class="p">,</span>
     <span class="n">nodes</span><span class="p">,</span>
@@ -400,6 +415,9 @@
     <span class="n">instance_name</span><span class="o">=</span><span class="s2">&quot;self&quot;</span><span class="p">,</span>
     <span class="n">exclude_types</span><span class="o">=</span><span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">Constant</span><span class="p">,),</span>
 <span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Yield the code lines that refactor ``varname``&#39;s assignment ``nodes``</span>
+<span class="sd">    into a (decorated) method — or a plain attribute assignment when the only</span>
+<span class="sd">    node is an excluded type (a constant, by default).&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">exclude_types</span><span class="p">):</span>
         <span class="k">yield</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">indent</span><span class="si">}{</span><span class="n">varname</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="n">ast</span><span class="o">.</span><span class="n">unparse</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">indent</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="k">else</span><span class="p">:</span>
@@ -409,17 +427,27 @@
         <span class="k">yield</span> <span class="p">(</span>
             <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">indent</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">property_method_lines</span><span class="p">(</span><span class="n">varname</span><span class="p">,</span> <span class="n">nodes</span><span class="p">))</span>
             <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">indent</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="p">)</span>
+        <span class="p">)</span></div>
 
 
+
+<div class="viewcode-block" id="generate_lines">
+<a class="viewcode-back" href="../../module_docs/titbit/ast_utils.html#titbit.ast_utils.generate_lines">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">generate_lines</span><span class="p">(</span>
     <span class="n">code_str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">sep</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">decorator</span><span class="o">=</span><span class="s2">&quot;@property&quot;</span><span class="p">,</span> <span class="n">instance_name</span><span class="o">=</span><span class="s2">&quot;self&quot;</span>
 <span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Yield property-refactored code lines for every assignment in ``code_str``.</span>
+
+<span class="sd">    &gt;&gt;&gt; lines = list(generate_lines(&#39;apple = banana + 1&#39;))</span>
+<span class="sd">    &gt;&gt;&gt; assert lines[0] == &#39;@property&#39;</span>
+<span class="sd">    &gt;&gt;&gt; assert lines[1] == &#39;def apple(self):&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">decorator</span><span class="o">=</span><span class="n">decorator</span><span class="p">,</span> <span class="n">instance_name</span><span class="o">=</span><span class="n">instance_name</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">varname</span><span class="p">,</span> <span class="n">nodes</span> <span class="ow">in</span> <span class="n">group_values_by_key</span><span class="p">(</span><span class="n">assignments_nodes</span><span class="p">(</span><span class="n">code_str</span><span class="p">))</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">yield from</span> <span class="n">generate_property_refactor_line</span><span class="p">(</span><span class="n">varname</span><span class="p">,</span> <span class="n">nodes</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">sep</span><span class="p">:</span>
-            <span class="k">yield</span> <span class="n">sep</span>
+            <span class="k">yield</span> <span class="n">sep</span></div>
+
 
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
@@ -432,8 +460,8 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate code that refactors &quot;flat code&quot; into a reusable &quot;controller&quot; class.</span>
 
-<span class="sd">    You&#39;d usually just use the `bound_properties_refactor` function for this, but</span>
-<span class="sd">    this class&#39;s instances let&#39;s you get intermediate objects that can be useful.</span>
+<span class="sd">    You&#39;d usually just use the ``bound_properties_refactor`` function for this, but</span>
+<span class="sd">    this class&#39;s instances let you get intermediate objects that can be useful.</span>
 
 <span class="sd">    &gt;&gt;&gt; code_str = &#39;&#39;&#39;</span>
 <span class="sd">    ... apple = banana + carrot</span>
@@ -468,6 +496,7 @@
     <span class="n">exclude_types</span> <span class="o">=</span> <span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">Constant</span><span class="p">,)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Bind the line-generator to this instance&#39;s formatting options.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_refactored_lines_gen</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span>
             <span class="n">generate_property_refactor_line</span><span class="p">,</span>
             <span class="n">indent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">indent</span><span class="p">,</span>
@@ -478,10 +507,13 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">assignments_to_bind</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;``{varname: [assignment nodes]}`` extracted from ``self.code``.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">group_values_by_key</span><span class="p">(</span><span class="n">assignments_nodes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">code</span><span class="p">))</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">refactored_items</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Yield ``(varname, nodes)`` pairs with co-assigned variables rewritten</span>
+<span class="sd">        as ``self.&lt;name&gt;`` references.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">varname</span><span class="p">,</span> <span class="n">nodes</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">assignments_to_bind</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">bound_names</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">assignments_to_bind</span><span class="p">)</span> <span class="o">-</span> <span class="p">{</span><span class="n">varname</span><span class="p">}</span>
             <span class="n">_rename_to_bound_var</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span>
@@ -492,6 +524,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">refactored_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;``refactored_items`` materialized as a dict.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refactored_items</span><span class="p">)</span>
 
     <span class="nd">@property</span>
@@ -501,6 +534,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">refactored_code</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The refactored code as a single string (``prefix`` included).&quot;&quot;&quot;</span>
         <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="p">:</span>
             <span class="n">s</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span>
@@ -508,6 +542,7 @@
         <span class="k">return</span> <span class="n">s</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return ``self.refactored_code``.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">refactored_code</span></div>
 
 

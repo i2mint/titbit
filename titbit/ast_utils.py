@@ -140,13 +140,14 @@ def ast_flat_hierarchy():
     """
     Returns a dictionary with the AST classes grouped by their module path.
 
+    The exact contents vary across Python versions (3.12 added
+    ``ast.type_param``, for example), so we assert stable members rather
+    than the full listing:
+
     >>> t = ast_flat_hierarchy()
-    >>> sorted(t)  # doctest: +NORMALIZE_WHITESPACE
-    ['ast', 'ast.Constant', 'ast.boolop', 'ast.cmpop', 'ast.excepthandler',
-    'ast.expr', 'ast.expr.Constant', 'ast.expr_context', 'ast.mod', 'ast.operator',
-    'ast.pattern', 'ast.slice', 'ast.stmt', 'ast.type_ignore', 'ast.unaryop']
-    >>> sorted(t['ast.expr.Constant'])
-    ['Bytes', 'Ellipsis', 'NameConstant', 'Num', 'Str']
+    >>> assert {'ast', 'ast.expr', 'ast.stmt', 'ast.operator'} <= set(t)
+    >>> 'BinOp' in t['ast.expr']
+    True
 
     """
     kv_pairs = yield_class_hierarchy(ast, path=("ast",), base_class=ast.AST)

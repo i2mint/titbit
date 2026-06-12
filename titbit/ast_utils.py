@@ -175,6 +175,16 @@ OldToNew = Union[CallableMapping, Mapping[KT, VT]]
 
 @singledispatch
 def ensure_callable_mapping(mapping: CallableMapping) -> CallableMapping:
+    """Ensure ``mapping`` is callable: callables pass through unchanged, and
+    ``Mapping`` instances become key->value getter functions that fall back
+    to the key itself when it's missing.
+
+    >>> ensure_callable_mapping(len) is len
+    True
+    >>> getter = ensure_callable_mapping({'a': 1})
+    >>> getter('a'), getter('missing')
+    (1, 'missing')
+    """
     assert callable(mapping), "mapping must be callable."
     return mapping
 
@@ -289,6 +299,9 @@ def generate_property_refactor_line(
     instance_name="self",
     exclude_types=(ast.Constant,),
 ):
+    """Yield the code lines that refactor ``varname``'s assignment ``nodes``
+    into a (decorated) method — or a plain attribute assignment when the only
+    node is an excluded type (a constant, by default)."""
     if len(nodes) == 1 and isinstance(nodes[0], exclude_types):
         yield f"{indent}{varname} = {ast.unparse(nodes[0]).strip()}" + f"\n{indent}"
     else:
@@ -304,6 +317,12 @@ def generate_property_refactor_line(
 def generate_lines(
     code_str, *, sep: str = "\n", decorator="@property", instance_name="self"
 ):
+    """Yield property-refactored code lines for every assignment in ``code_str``.
+
+    >>> lines = list(generate_lines('apple = banana + 1'))
+    >>> assert lines[0] == '@property'
+    >>> assert lines[1] == 'def apple(self):'
+    """
     kwargs = dict(decorator=decorator, instance_name=instance_name)
     for varname, nodes in group_values_by_key(assignments_nodes(code_str)).items():
         yield from generate_property_refactor_line(varname, nodes, **kwargs)
@@ -355,6 +374,7 @@ class BoundPropertiesRefactor:
     exclude_types = (ast.Constant,)
 
     def __post_init__(self):
+        """Bind the line-generator to this instance's formatting options."""
         self._refactored_lines_gen = partial(
             generate_property_refactor_line,
             indent=self.indent,
@@ -365,10 +385,13 @@ class BoundPropertiesRefactor:
 
     @property
     def assignments_to_bind(self):
+        """``{varname: [assignment nodes]}`` extracted from ``self.code``."""
         return group_values_by_key(assignments_nodes(self.code))
 
     @property
     def refactored_items(self):
+        """Yield ``(varname, nodes)`` pairs with co-assigned variables rewritten
+        as ``self.<name>`` references."""
         for varname, nodes in self.assignments_to_bind.items():
             bound_names = set(self.assignments_to_bind) - {varname}
             _rename_to_bound_var = partial(
@@ -379,6 +402,7 @@ class BoundPropertiesRefactor:
 
     @property
     def refactored_nodes(self):
+        """``refactored_items`` materialized as a dict."""
         return dict(self.refactored_items)
 
     @property
@@ -388,6 +412,7 @@ class BoundPropertiesRefactor:
 
     @property
     def refactored_code(self):
+        """The refactored code as a single string (``prefix`` included)."""
         s = ""
         if self.prefix:
             s += self.prefix
@@ -395,6 +420,7 @@ class BoundPropertiesRefactor:
         return s
 
     def __call__(self):
+        """Return ``self.refactored_code``."""
         return self.refactored_code
 
 

@@ -12,11 +12,13 @@ To install: `pip install titbit`
 
 Generate a markdown table of contents (TOC) string from markdown.
 The markdown can be a string, a filepath, or a URL.
+(Requires the `md-toc` package: `pip install md-toc`.)
 
 ```python
+>>> from titbit import md_toc_string
 >>> url = 'https://raw.githubusercontent.com/i2mint/titbit/master/README.md'
->>> toc_string = md_toc_string(url)
->>> print(toc_string)
+>>> toc_string = md_toc_string(url)  # doctest: +SKIP
+>>> print(toc_string)  # doctest: +SKIP
 ```
 
 ```
@@ -54,6 +56,7 @@ Usage:
 Converts mermaid code to graphviz code.
 
 ```python
+>>> from titbit import mermaid_to_graphviz
 >>> mermaid_code = '''
 ... graph TD
 ... A --> B & C

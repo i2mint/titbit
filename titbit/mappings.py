@@ -7,6 +7,7 @@ KeyValueAggregate = TypeVar("KeyValueAggregate")
 
 
 def identity(x):
+    """Return ``x`` unchanged (the default key/value/egress function)."""
     return x
 
 
@@ -18,6 +19,12 @@ def generate_key_values(
     value_func: Callable[[T], VT] = identity,
     egress: Callable[[Iterator[tuple[KT, VT]]], KeyValueAggregate] = identity,
 ) -> KeyValueAggregate:
+    """Make ``(key_func(item), value_func(item))`` pairs from an iterable,
+    aggregated by ``egress`` (e.g. ``dict``; default: the pairs generator).
+
+    >>> generate_key_values([1, 2], key_func=str, egress=dict)
+    {'1': 1, '2': 2}
+    """
     return egress((key_func(item), value_func(item)) for item in iterable)
 
 

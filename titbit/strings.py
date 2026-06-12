@@ -5,6 +5,15 @@ from dol import written_key
 
 
 def ensure_content_bytes(src, *, encoding: str = "utf-8"):
+    """Resolve ``src`` to content bytes: bytes pass through; a string is read
+    as a file path if one exists, fetched if it's an http(s) URL, and encoded
+    otherwise.
+
+    >>> ensure_content_bytes(b'xyz')
+    b'xyz'
+    >>> ensure_content_bytes('abc')
+    b'abc'
+    """
     if isinstance(src, bytes):
         return src
     elif isinstance(src, str):

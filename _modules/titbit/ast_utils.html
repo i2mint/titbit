@@ -5,18 +5,18 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>titbit.ast_utils &mdash; titbit 0.1.2 documentation</title>
+  <title>titbit.ast_utils &mdash; titbit 0.1.10 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=92734c54"></script>
-      <script src="../../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/documentation_options.js?v=bafade30"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../_static/copybutton.js?v=f281be69"></script>
@@ -84,7 +84,8 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">ast</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ast</span><span class="w"> </span><span class="kn">import</span> <span class="n">AST</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">lru_cache</span><span class="p">,</span> <span class="n">partial</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">KT</span><span class="p">,</span> <span class="n">VT</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">KT</span><span class="p">,</span> <span class="n">VT</span><span class="p">,</span> <span class="n">Dict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Callable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>  <span class="c1"># not from typing because need for singledispatch</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
@@ -100,7 +101,7 @@
 <a class="viewcode-back" href="../../module_docs/titbit/ast_utils.html#titbit.ast_utils.yield_class_hierarchy">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">yield_class_hierarchy</span><span class="p">(</span>
     <span class="n">module</span><span class="p">,</span> <span class="n">base_class</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Prints out the hierarchy of AST types defined in the ast module.</span>
 
@@ -121,7 +122,7 @@
 
 <div class="viewcode-block" id="group_values_by_key">
 <a class="viewcode-back" href="../../module_docs/titbit/ast_utils.html#titbit.ast_utils.group_values_by_key">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">group_values_by_key</span><span class="p">(</span><span class="n">kv_pairs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">KT</span><span class="p">,</span> <span class="n">VT</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="n">KT</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">VT</span><span class="p">]]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">group_values_by_key</span><span class="p">(</span><span class="n">kv_pairs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">KT</span><span class="p">,</span> <span class="n">VT</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">KT</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">VT</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Groups values by key in a list.</span>
 
@@ -234,17 +235,18 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a dictionary with the AST classes grouped by their module path.</span>
 
+<span class="sd">    The exact contents vary across Python versions (3.12 added</span>
+<span class="sd">    ``ast.type_param``, for example), so we assert stable members rather</span>
+<span class="sd">    than the full listing:</span>
+
 <span class="sd">    &gt;&gt;&gt; t = ast_flat_hierarchy()</span>
-<span class="sd">    &gt;&gt;&gt; sorted(t)  # doctest: +NORMALIZE_WHITESPACE</span>
-<span class="sd">    [&#39;ast&#39;, &#39;ast.Constant&#39;, &#39;ast.boolop&#39;, &#39;ast.cmpop&#39;, &#39;ast.excepthandler&#39;,</span>
-<span class="sd">    &#39;ast.expr&#39;, &#39;ast.expr.Constant&#39;, &#39;ast.expr_context&#39;, &#39;ast.mod&#39;, &#39;ast.operator&#39;,</span>
-<span class="sd">    &#39;ast.pattern&#39;, &#39;ast.slice&#39;, &#39;ast.stmt&#39;, &#39;ast.type_ignore&#39;, &#39;ast.unaryop&#39;]</span>
-<span class="sd">    &gt;&gt;&gt; sorted(t[&#39;ast.expr.Constant&#39;])</span>
-<span class="sd">    [&#39;Bytes&#39;, &#39;Ellipsis&#39;, &#39;NameConstant&#39;, &#39;Num&#39;, &#39;Str&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; assert {&#39;ast&#39;, &#39;ast.expr&#39;, &#39;ast.stmt&#39;, &#39;ast.operator&#39;} &lt;= set(t)</span>
+<span class="sd">    &gt;&gt;&gt; &#39;BinOp&#39; in t[&#39;ast.expr&#39;]</span>
+<span class="sd">    True</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">kv_pairs</span> <span class="o">=</span> <span class="n">yield_class_hierarchy</span><span class="p">(</span><span class="n">ast</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;ast&#39;</span><span class="p">,),</span> <span class="n">base_class</span><span class="o">=</span><span class="n">ast</span><span class="o">.</span><span class="n">AST</span><span class="p">)</span>
-    <span class="n">kv_pairs</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kv_pairs</span><span class="p">)</span>  <span class="c1"># mk dot-paths from tuple paths</span>
+    <span class="n">kv_pairs</span> <span class="o">=</span> <span class="n">yield_class_hierarchy</span><span class="p">(</span><span class="n">ast</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;ast&quot;</span><span class="p">,),</span> <span class="n">base_class</span><span class="o">=</span><span class="n">ast</span><span class="o">.</span><span class="n">AST</span><span class="p">)</span>
+    <span class="n">kv_pairs</span> <span class="o">=</span> <span class="p">((</span><span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kv_pairs</span><span class="p">)</span>  <span class="c1"># mk dot-paths from tuple paths</span>
     <span class="k">return</span> <span class="n">group_values_by_key</span><span class="p">(</span><span class="n">kv_pairs</span><span class="p">)</span></div>
 
 
@@ -364,7 +366,7 @@
 
 <div class="viewcode-block" id="assignments_code">
 <a class="viewcode-back" href="../../module_docs/titbit/ast_utils.html#titbit.ast_utils.assignments_code">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">assignments_code</span><span class="p">(</span><span class="n">code</span><span class="p">:</span> <span class="n">Code</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">assignments_code</span><span class="p">(</span><span class="n">code</span><span class="p">:</span> <span class="n">Code</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Yield (name, code_definition) variable assignments pairs.&quot;&quot;&quot;</span>
     <span class="n">code</span> <span class="o">=</span> <span class="n">ensure_ast</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">ast_node</span> <span class="ow">in</span> <span class="n">assignments_nodes</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
@@ -393,25 +395,25 @@
     <span class="n">varname</span><span class="p">,</span>
     <span class="n">nodes</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">indent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-    <span class="n">decorator</span><span class="o">=</span><span class="s1">&#39;@property&#39;</span><span class="p">,</span>
-    <span class="n">instance_name</span><span class="o">=</span><span class="s1">&#39;self&#39;</span><span class="p">,</span>
+    <span class="n">indent</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">decorator</span><span class="o">=</span><span class="s2">&quot;@property&quot;</span><span class="p">,</span>
+    <span class="n">instance_name</span><span class="o">=</span><span class="s2">&quot;self&quot;</span><span class="p">,</span>
     <span class="n">exclude_types</span><span class="o">=</span><span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">Constant</span><span class="p">,),</span>
 <span class="p">):</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">exclude_types</span><span class="p">):</span>
-        <span class="k">yield</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">indent</span><span class="si">}{</span><span class="n">varname</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="n">ast</span><span class="o">.</span><span class="n">unparse</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="si">{</span><span class="n">indent</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">yield</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">indent</span><span class="si">}{</span><span class="n">varname</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="n">ast</span><span class="o">.</span><span class="n">unparse</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">indent</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">decorator</span><span class="p">:</span>
-            <span class="k">yield</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">indent</span><span class="si">}{</span><span class="n">decorator</span><span class="si">}</span><span class="s1">&#39;</span>
-        <span class="k">yield</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">indent</span><span class="si">}</span><span class="s1">def </span><span class="si">{</span><span class="n">varname</span><span class="si">}</span><span class="s1">(</span><span class="si">{</span><span class="n">instance_name</span><span class="si">}</span><span class="s1">):&#39;</span>
+            <span class="k">yield</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">indent</span><span class="si">}{</span><span class="n">decorator</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">yield</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">indent</span><span class="si">}</span><span class="s2">def </span><span class="si">{</span><span class="n">varname</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">instance_name</span><span class="si">}</span><span class="s2">):&quot;</span>
         <span class="k">yield</span> <span class="p">(</span>
-            <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">indent</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">property_method_lines</span><span class="p">(</span><span class="n">varname</span><span class="p">,</span> <span class="n">nodes</span><span class="p">))</span>
-            <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="si">{</span><span class="n">indent</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">indent</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">property_method_lines</span><span class="p">(</span><span class="n">varname</span><span class="p">,</span> <span class="n">nodes</span><span class="p">))</span>
+            <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">indent</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">generate_lines</span><span class="p">(</span>
-    <span class="n">code_str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">sep</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">decorator</span><span class="o">=</span><span class="s1">&#39;@property&#39;</span><span class="p">,</span> <span class="n">instance_name</span><span class="o">=</span><span class="s1">&#39;self&#39;</span>
+    <span class="n">code_str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">sep</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">decorator</span><span class="o">=</span><span class="s2">&quot;@property&quot;</span><span class="p">,</span> <span class="n">instance_name</span><span class="o">=</span><span class="s2">&quot;self&quot;</span>
 <span class="p">):</span>
     <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">decorator</span><span class="o">=</span><span class="n">decorator</span><span class="p">,</span> <span class="n">instance_name</span><span class="o">=</span><span class="n">instance_name</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">varname</span><span class="p">,</span> <span class="n">nodes</span> <span class="ow">in</span> <span class="n">group_values_by_key</span><span class="p">(</span><span class="n">assignments_nodes</span><span class="p">(</span><span class="n">code_str</span><span class="p">))</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -459,10 +461,10 @@
 
     <span class="n">code</span><span class="p">:</span> <span class="n">Code</span>
 
-    <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-    <span class="n">indent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-    <span class="n">decorator</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;@property&#39;</span>
-    <span class="n">instance_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;self&#39;</span>
+    <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">indent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">decorator</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;@property&quot;</span>
+    <span class="n">instance_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;self&quot;</span>
     <span class="n">exclude_types</span> <span class="o">=</span> <span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">Constant</span><span class="p">,)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -484,7 +486,7 @@
             <span class="n">bound_names</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">assignments_to_bind</span><span class="p">)</span> <span class="o">-</span> <span class="p">{</span><span class="n">varname</span><span class="p">}</span>
             <span class="n">_rename_to_bound_var</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span>
                 <span class="n">rename_variables</span><span class="p">,</span>
-                <span class="n">old_to_new</span><span class="o">=</span><span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;self.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">bound_names</span><span class="p">},</span>
+                <span class="n">old_to_new</span><span class="o">=</span><span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;self.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">bound_names</span><span class="p">},</span>
             <span class="p">)</span>
             <span class="k">yield</span> <span class="n">varname</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">_rename_to_bound_var</span><span class="p">,</span> <span class="n">nodes</span><span class="p">))</span>
 
@@ -499,10 +501,10 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">refactored_code</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="p">:</span>
             <span class="n">s</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span>
-        <span class="n">s</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_refactored_lines</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_refactored_lines</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">s</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -551,7 +553,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright NO COPYRIGHT.</p>
+    <p></p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

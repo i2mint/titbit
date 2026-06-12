@@ -47,8 +47,12 @@ def md_toc_string(md_src):
         - [ensure_ast](#ensure_ast)
 
     """
-    # pylint: disable=import-error
-    import md_toc  # pip install md-toc
+    try:
+        import md_toc
+    except ImportError as e:
+        raise ImportError(
+            "md_toc_string needs the md-toc package: pip install md-toc"
+        ) from e
 
     if not os.path.isfile(md_src):
         content_bytes = ensure_content_bytes(md_src)

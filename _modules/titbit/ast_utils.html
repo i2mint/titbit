@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>titbit.ast_utils &mdash; titbit 0.1.11 documentation</title>
+  <title>titbit.ast_utils &mdash; titbit 0.1.12 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=1e825a29"></script>
+      <script src="../../_static/documentation_options.js?v=297ad043"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -255,7 +255,11 @@
 <a class="viewcode-back" href="../../module_docs/titbit/ast_utils.html#titbit.ast_utils.ast_class_names">[docs]</a>
 <span class="nd">@lru_cache</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">ast_class_names</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;The set of names of ast classes&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The set of names of ast classes</span>
+
+<span class="sd">    &gt;&gt;&gt; &#39;BinOp&#39; in ast_class_names()</span>
+<span class="sd">    True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">ast_flat_hierarchy</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span></div>
 
 
@@ -380,7 +384,11 @@
 <div class="viewcode-block" id="assignments_code">
 <a class="viewcode-back" href="../../module_docs/titbit/ast_utils.html#titbit.ast_utils.assignments_code">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">assignments_code</span><span class="p">(</span><span class="n">code</span><span class="p">:</span> <span class="n">Code</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Yield (name, code_definition) variable assignments pairs.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Yield (name, code_definition) variable assignments pairs.</span>
+
+<span class="sd">    &gt;&gt;&gt; list(assignments_code(&#39;a = 1\\nb = a + 2&#39;))</span>
+<span class="sd">    [(&#39;a&#39;, &#39;1&#39;), (&#39;b&#39;, &#39;a + 2&#39;)]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">code</span> <span class="o">=</span> <span class="n">ensure_ast</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">ast_node</span> <span class="ow">in</span> <span class="n">assignments_nodes</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
         <span class="k">yield</span> <span class="n">name</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">unparse</span><span class="p">(</span><span class="n">ast_node</span><span class="p">)</span></div>

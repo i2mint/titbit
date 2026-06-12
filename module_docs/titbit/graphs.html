@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>titbit.graphs &mdash; titbit 0.1.11 documentation</title>
+  <title>titbit.graphs &mdash; titbit 0.1.12 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=1e825a29"></script>
+      <script src="../../_static/documentation_options.js?v=297ad043"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -94,7 +94,16 @@
 <span class="sig-prename descclassname"><span class="pre">titbit.graphs.</span></span><span class="sig-name descname"><span class="pre">attribute_dependency_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/titbit/graphs.html#attribute_dependency_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#titbit.graphs.attribute_dependency_graph" title="Link to this definition"></a></dt>
 <dd><p>Return a graphviz Digraph of the attribute dependencies of a class.</p>
 <p>An attribute (method or property) is dependent on another attribute if it
-uses it in its definition.</p>
+uses it in its definition. (The class’s source must be available to
+<code class="docutils literal notranslate"><span class="pre">inspect</span></code> — interactively defined classes won’t work.)</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">titbit.ast_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">BoundPropertiesRefactor</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">attribute_dependency_graph</span><span class="p">(</span><span class="n">BoundPropertiesRefactor</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">g</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
+<span class="go">&#39;Digraph&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s1">&#39;refactored_code&#39;</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">source</span>
+<span class="go">True</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">

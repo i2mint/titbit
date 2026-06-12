@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>titbit.mappings &mdash; titbit 0.1.11 documentation</title>
+  <title>titbit.mappings &mdash; titbit 0.1.12 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=1e825a29"></script>
+      <script src="../../_static/documentation_options.js?v=297ad043"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -155,14 +155,14 @@ aggregated by <code class="docutils literal notranslate"><span class="pre">egres
 
 <dl class="py function">
 <dt class="sig sig-object py" id="titbit.mappings.iterable_to_dict">
-<span class="sig-prename descclassname"><span class="pre">titbit.mappings.</span></span><span class="sig-name descname"><span class="pre">iterable_to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">iterable:</span> <span class="pre">~collections.abc.Iterable,</span> <span class="pre">*,</span> <span class="pre">key_func:</span> <span class="pre">~collections.abc.Callable[[T],</span> <span class="pre">KT]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">identity&gt;,</span> <span class="pre">value_func:</span> <span class="pre">~collections.abc.Callable[[T],</span> <span class="pre">VT]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">identity&gt;,</span> <span class="pre">egress:</span> <span class="pre">~collections.abc.Callable[[~collections.abc.Iterator[tuple[KT,</span> <span class="pre">VT]]],</span> <span class="pre">~titbit.mappings.KeyValueAggregate]</span> <span class="pre">=</span> <span class="pre">&lt;class</span> <span class="pre">'dict'&gt;</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">KeyValueAggregate</span></span></span><a class="headerlink" href="#titbit.mappings.iterable_to_dict" title="Link to this definition"></a></dt>
-<dd><p>Convert an iterable of key-value pairs to a dictionary.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">iterable_to_dict</span><span class="p">([(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)])</span>
+<span class="sig-prename descclassname"><span class="pre">titbit.mappings.</span></span><span class="sig-name descname"><span class="pre">iterable_to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;function</span> <span class="pre">identity&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;function</span> <span class="pre">identity&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/titbit/mappings.html#iterable_to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#titbit.mappings.iterable_to_dict" title="Link to this definition"></a></dt>
+<dd><p>Aggregate an iterable into a <code class="docutils literal notranslate"><span class="pre">dict</span></code> (<code class="docutils literal notranslate"><span class="pre">generate_key_values</span></code> with
+<code class="docutils literal notranslate"><span class="pre">egress=dict</span></code>). By default each item maps to itself; pass <code class="docutils literal notranslate"><span class="pre">key_func</span></code>
+and/or <code class="docutils literal notranslate"><span class="pre">value_func</span></code> to shape the keys and values.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">operator</span><span class="w"> </span><span class="kn">import</span> <span class="n">itemgetter</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pairs</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">iterable_to_dict</span><span class="p">(</span><span class="n">pairs</span><span class="p">,</span> <span class="n">key_func</span><span class="o">=</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">value_func</span><span class="o">=</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
 <span class="go">{&#39;a&#39;: 1, &#39;b&#39;: 2}</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">iterable_to_dict</span><span class="p">([(</span><span class="s1">&#39;key1&#39;</span><span class="p">,</span> <span class="s1">&#39;value1&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;key2&#39;</span><span class="p">,</span> <span class="s1">&#39;value2&#39;</span><span class="p">)])</span>
-<span class="go">{&#39;key1&#39;: &#39;value1&#39;, &#39;key2&#39;: &#39;value2&#39;}</span>
 </pre></div>
 </div>
 </dd></dl>

@@ -3,7 +3,8 @@
 import ast
 from ast import AST
 from functools import lru_cache, partial
-from typing import Iterable, Tuple, List, KT, VT, Sequence, Callable, Dict
+from typing import Tuple, List, KT, VT, Dict
+from collections.abc import Iterable, Sequence, Callable
 from collections.abc import Mapping  # not from typing because need for singledispatch
 from collections import defaultdict
 import inspect
@@ -17,7 +18,7 @@ from i2 import Sig
 
 def yield_class_hierarchy(
     module, base_class: type, path: Sequence[str] = ()
-) -> Iterable[Tuple[Sequence[str], str]]:
+) -> Iterable[tuple[Sequence[str], str]]:
     """
     Prints out the hierarchy of AST types defined in the ast module.
 
@@ -35,7 +36,7 @@ def yield_class_hierarchy(
             yield from yield_class_hierarchy(module, obj, path + (obj.__name__,))
 
 
-def group_values_by_key(kv_pairs: Iterable[Tuple[KT, VT]]) -> Dict[KT, List[VT]]:
+def group_values_by_key(kv_pairs: Iterable[tuple[KT, VT]]) -> dict[KT, list[VT]]:
     """
     Groups values by key in a list.
 
@@ -257,7 +258,7 @@ def assignments_nodes(code: Code):
                 yield target.id, node.value
 
 
-def assignments_code(code: Code) -> Iterable[Tuple[str, str]]:
+def assignments_code(code: Code) -> Iterable[tuple[str, str]]:
     """Yield (name, code_definition) variable assignments pairs."""
     code = ensure_ast(code)
     for name, ast_node in assignments_nodes(code):

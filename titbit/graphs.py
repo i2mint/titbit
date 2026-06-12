@@ -1,6 +1,7 @@
 """Tools around graphs"""
 
-from typing import Optional, Iterable
+from typing import Optional
+from collections.abc import Iterable
 
 
 def mermaid_to_graphviz(
@@ -114,11 +115,11 @@ def _merge_non_none_values(d: dict, **kwargs):
 def update_node_attributes(
     graph,
     node_ids: Iterable,
-    attributes: Optional[dict] = None,
+    attributes: dict | None = None,
     *,
-    shape: Optional[str] = None,
-    fillcolor: Optional[str] = None,
-    style: Optional[str] = None,
+    shape: str | None = None,
+    fillcolor: str | None = None,
+    style: str | None = None,
     **extra_attributes,
 ):
     """
